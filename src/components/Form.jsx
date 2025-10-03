@@ -20,6 +20,7 @@ function Form() {
       >
         <input
           type="number"
+          
           value={pincode}
           placeholder="Enter pincode"
           onChange={(e) => setPincode(e.target.value)}

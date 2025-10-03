@@ -53,7 +53,7 @@ function Results() {
 
 
       {loading ? (
-        <div className="p-6 flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center mt-60">
           <Loader/>
         </div>
       ) : error ? (
