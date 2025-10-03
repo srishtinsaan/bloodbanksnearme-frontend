@@ -60,7 +60,7 @@ function Results() {
         <p className="text-center text-red-500 font-medium mt-30">{error}</p>
       ) : (
         <div>
-        <h2 className="text-2xl font-bold text-center text-red-500 mb-6 mt-30">
+        <h2 className="lg:text-2xl text-xl font-bold text-center text-red-500 mb-6 mt-30">
           Nearby Blood Banks for Pincode: {pincode}
         </h2>
         

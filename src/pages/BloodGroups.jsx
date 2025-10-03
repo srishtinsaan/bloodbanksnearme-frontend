@@ -18,36 +18,35 @@ export default function BloodGroups() {
 
   return (
     <div className="flex flex-col items-center min-h-100 text-white p-6">
-      <h1 className="text-4xl font-bold mb-5">Blood Donation Compatibility</h1>
+      <h1 className="text-3xl font-bold mb-5 text-center">Blood Donation Compatibility</h1>
 
       {/* Intro */}
-        <p className="text-center text-[110%] px-65 mb-10">
+        <p className="text-center text-[110%] lg:px-65 mb-10">
           
           Click on the blood group to check which blood groups you can donate to and receive from.
   </p>
 
-      {/* Circles */}
-      <div className="grid grid-cols-8 gap-6 mb-8 ">
-        {bloodGroups.map((group) => (
-          <button
-  key={group}
-  onClick={() => {
-    if (selected === group) {
-        setSelected(null);  // hide info
-    } else {
-        setSelected(group);  // show info
-    }
-  }}
-  className={`w-20 h-20 flex items-center justify-center rounded-full border-2 transition
-    ${selected === group 
-      ? "bg-red-500/50 border-red-900" 
-      : "hover:bg-white hover:text-black hover:text-semibold "}`
-  }
->
-  {group}
-</button>
-        ))}
-      </div>
+{/* Circles */}
+<div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 mb-8">
+  {bloodGroups.map((group) => (
+    <button
+      key={group}
+      onClick={() => {
+        if (selected === group) {
+          setSelected(null);  // hide info
+        } else {
+          setSelected(group);  // show info
+        }
+      }}
+      className={`w-20 h-20 flex items-center justify-center rounded-full border-2 transition
+        ${selected === group 
+          ? "bg-red-500/50 border-red-900" 
+          : "hover:bg-white hover:text-black font-semibold"}`}
+    >
+      {group}
+    </button>
+  ))}
+</div>
 
       {/* Result */}
 

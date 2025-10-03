@@ -13,7 +13,7 @@ function Form() {
   };
 
   return (
-    <div className="min-h-30 ">
+    <div className="lg:min-h-30 ">
       <form
         onSubmit={handleSubmit}
         className="flex justify-center gap-3 m-9"
@@ -23,7 +23,7 @@ function Form() {
           value={pincode}
           placeholder="Enter pincode"
           onChange={(e) => setPincode(e.target.value)}
-          className="w-64 px-4 py-2 text-white rounded-md border border-gray-300"
+          className="lg:w-64 px-4 py-2 text-white rounded-md border border-gray-300"
         />
         <button
           type="submit"
