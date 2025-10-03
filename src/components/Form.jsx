@@ -23,11 +23,11 @@ function Form() {
           value={pincode}
           placeholder="Enter pincode"
           onChange={(e) => setPincode(e.target.value)}
-          className="lg:w-64 px-4 py-2 text-white rounded-md border border-gray-300"
+          className="lg:w-64 w-50 px-4 py-2 text-white rounded-md border border-gray-300"
         />
         <button
           type="submit"
-          className="px-6 py-2 rounded-md border hover:bg-white/30 transition font-semibold shadow-md"
+          className="lg:px-6 lg:py-2 px-3 rounded-md border hover:bg-white/30 transition font-semibold shadow-md"
         >
           Search
         </button>

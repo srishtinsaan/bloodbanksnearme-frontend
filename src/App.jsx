@@ -9,7 +9,7 @@ function App() {
   return (
     <BrowserRouter>
       {/* Background */}
-      <div className="min-h-screen w-full relative overflow-x-hidden bg-black text-white">
+      <div id="app-container" className="min-h-screen w-full relative overflow-x-hidden bg-black text-white">
         
         
 

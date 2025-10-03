@@ -1,10 +1,19 @@
 export default function GetStartedSection() {
   const scrollToTop = () => {
+  const container = document.getElementById("app-container");
+  if (container) {
+    container.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  } else {
     window.scrollTo({
       top: 0,
-      behavior: "smooth", // smooth scroll
+      behavior: "smooth",
     });
-  };
+  }
+};
+
 
   return (
     <section className="text-white py-12 mt-16">
@@ -17,7 +26,7 @@ export default function GetStartedSection() {
         </p>
         <button
           onClick={scrollToTop}
-          className="bg-white text-black hover:bg-grey-900 font-bold py-2 px-4 rounded-lg shadow-md transition"
+          className="bg-white text-black hover:bg-gray-200 font-bold py-2 px-4 rounded-lg shadow-md transition"
         >
           Get Started
         </button>
