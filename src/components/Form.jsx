@@ -13,10 +13,10 @@ function Form() {
   };
 
   return (
-    <div className="lg:min-h-30 ">
+    <div className="min-h-30 ">
       <form
         onSubmit={handleSubmit}
-        className="flex justify-center gap-3 m-9"
+        className="flex justify-center gap-3 m-9 "
       >
         <input
           type="number"
