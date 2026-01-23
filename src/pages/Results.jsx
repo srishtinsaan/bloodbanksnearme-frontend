@@ -4,10 +4,10 @@ import { fetchBloodBanks } from "../utils/helper.js";
 import FormResults from "../components/FormResults.jsx";
 import Navbar from "../components/Navbar.jsx";
 import Loader from "../components/Loader.jsx";
+import {Link} from "react-router-dom"
+import {ArrowLeft} from "lucide-react"
 
 function Results() {
-
-  
 
   const [searchParams] = useSearchParams();
   const pincode = searchParams.get("pincode");
@@ -30,7 +30,7 @@ function Results() {
 
         const timer = setTimeout(() => {
                           setLoading(false);
-                      }, 2000);
+                      }, 500);
 
         return () => clearTimeout(timer);
       } catch (err) {
@@ -60,7 +60,17 @@ function Results() {
         <p className="text-center text-red-500 font-medium mt-30">{error}</p>
       ) : (
         <div>
-        <h2 className="lg:text-2xl text-xl font-bold text-center text-red-500 mb-6 mt-30">
+
+          {/* back button */}
+        {/* <Link href="/">
+            <button  className="text-white mt-20  hover:text-red-600 hover:bg-zinc-900 mb-6">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Search
+            </button>
+          </Link> */}
+        
+
+        <h2 className="lg:text-2xl text-xl font-bold text-center mb-6 mt-10 lg:mt-30" >
           Nearby Blood Banks for Pincode: {pincode}
         </h2>
         

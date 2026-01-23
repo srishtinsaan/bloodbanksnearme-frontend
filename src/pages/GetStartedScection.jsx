@@ -18,8 +18,8 @@ export default function GetStartedSection() {
   return (
     <section className="text-white py-12 mt-16">
       <div className="container mx-auto text-center px-6">
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">
-          Ready to Find a Blood Bank Near You?
+        <h2 className="text-2xl md:text-5xl font-bold mb-4">
+          Ready to save lives?
         </h2>
         <p className="mb-6 text-gray-200">
           Start searching now and connect with life-saving resources in just a few clicks.

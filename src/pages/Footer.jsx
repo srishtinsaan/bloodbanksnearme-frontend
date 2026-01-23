@@ -1,44 +1,168 @@
-export default function Footer() {
+import { Heart, Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail, Clock } from "lucide-react";
+
+function Footer() {
   return (
-    <footer className="text-gray-200 py-8 mt-10">
-      
-      <div className="mt-8 border-t border-grey-100 pt-8 container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-        
-        {/* About */}
-        <div>
-          <h3 className="text-lg font-bold mb-3 text-white">Blood Bank Near Me</h3>
-          <p className="text-sm leading-relaxed">
-            A platform to help you quickly locate nearby blood banks, ensuring
-            timely access to life-saving resources.
-          </p>
+    <footer className="bg-black text-white">
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+          {/* Brand Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Heart className="w-8 h-8 text-red-600 fill-red-600" />
+              <span className="text-2xl font-bold">BloodConnect</span>
+            </div>
+            <p className="text-sm font-semibold text-red-600">Life-saving Connections</p>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              Your trusted partner in emergency blood assistance, connecting donors, hospitals, and patients with
+              real-time availability and verified support.
+            </p>
+
+            <div className="flex gap-4 pt-2">
+              <a
+                href="#"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-red-600 transition-colors duration-300"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-red-600 transition-colors duration-300"
+              >
+                <Twitter className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-red-600 transition-colors duration-300"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="#"
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-zinc-900 text-white hover:bg-red-600 transition-colors duration-300"
+              >
+                <Linkedin className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+
+          {/* Services Section */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">Blood Services</h3>
+            <ul className="space-y-3">
+              {[
+                "Emergency Blood Requests",
+                "Nearby Donor Search",
+                "Blood Bank Directory",
+                "Plasma & Platelet Support",
+                "AI-Based Matching System",
+              ].map((item, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 mt-2 flex-shrink-0" />
+                  <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Resources Section */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">User Resources</h3>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors block">
+                  Donor Registration
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-gray-400 hover:text-red-500 font-semibold transition-colors block">
+                  Request Blood
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors block">
+                  Blood Donation Guidelines
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors block">
+                  Safety & Verification
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors block">
+                  Success Stories
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact Section */}
+          <div>
+            <h3 className="text-lg font-bold mb-6">Contact & Hours</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-red-600 mt-0.5" />
+                <div className="text-sm text-gray-400">
+                  123 Healthcare Avenue
+                  <br />
+                  Medical District, MD 12345
+                </div>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <Phone className="w-5 h-5 text-red-600 mt-0.5" />
+                <a href="tel:1-800-BLOOD-HELP" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  1-800-BLOOD-HELP
+                </a>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <Mail className="w-5 h-5 text-red-600 mt-0.5" />
+                <a href="mailto:support@bloodconnect.com" className="text-sm text-gray-400 hover:text-white transition-colors">
+                  support@bloodconnect.com
+                </a>
+              </li>
+
+              <li className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-red-600 mt-0.5" />
+                <div className="text-sm text-gray-400">
+                  <div>Mon–Fri: 8:00 AM – 8:00 PM</div>
+                  <div>Sat–Sun: 9:00 AM – 5:00 PM</div>
+                  <div className="text-red-600 font-semibold mt-1">Emergency: 24/7</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h3 className="text-lg font-bold mb-3 text-white">Quick Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li><a href="/home" className="hover:underline">Home</a></li>
-            <li><a href="/home/modules" className="hover:underline">Modules</a></li>
-            <li><a href="/home/alerts" className="hover:underline">Alerts</a></li>
-            <li><a href="/home/help" className="hover:underline">Help & Support</a></li>
-          </ul>
-        </div>
+        {/* Divider */}
+        <div className="border-t border-zinc-800 my-8" />
 
-        {/* Contact */}
-        <div>
-          <h3 className="text-lg font-bold mb-3 text-white">Contact Us</h3>
-          <ul className="space-y-2 text-sm">
-            <li>Email: <a href="mailto:support@bloodbank.com" className="hover:underline">support@bloodbank.com</a></li>
-            <li>Phone: <a href="tel:+911234567890" className="hover:underline">+91 12345 67890</a></li>
-            <li>Address: 123 Health Street, New Delhi, India</li>
-          </ul>
+        {/* Bottom Section */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
+          <p>© 2025 BloodConnect. All rights reserved.</p>
+
+          <div className="flex gap-6">
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Accessibility</a>
+          </div>
         </div>
       </div>
 
-      {/* Bottom note */}
-      <div className="mt-8 pt-4  text-center text-sm text-gray-400">
-        © {new Date().getFullYear()} Blood Bank Near Me. All rights reserved.
+      {/* Bottom Bar */}
+      <div className="bg-gradient-to-r from-red-600/20 via-red-500/20 to-red-600/20 border-t border-red-600/30">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <p className="text-center text-sm text-red-100 font-medium">
+            Always Connected for Your Emergency Needs
+          </p>
+        </div>
       </div>
     </footer>
   );
 }
+
+export default Footer;

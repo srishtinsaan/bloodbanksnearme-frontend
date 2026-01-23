@@ -1,27 +1,38 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Logo from "../assets/images/logo.png";
+import {HeartHandshake} from "lucide-react"
+import { Link } from "react-router-dom"
+
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="w-full lg:fixed z-50 shadow-md">
-      <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3">
+    <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md">
+      <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3 lg:py-1">
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src={Logo} alt="Logo" className="h-12 w-12 sm:h-14 sm:w-14" />
+          <HeartHandshake className="h-12 w-12 sm:h-14 sm:w-14 text-red-500" />
           <div className="flex flex-col leading-none">
-            <h1 className="font-bold text-lg sm:text-xl">Blood Bank</h1>
-            <h2 className="font-bold text-sm sm:text-base">Near Me</h2>
+            <h1 className="font-bold text-lg sm:text-xl">BloodConnect</h1>
           </div>
         </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
-          <a href="#">Donate Blood</a>
+          <Link 
+            to="/donor" 
+            className="text-red-500 font-semibold hover:text-red-600"
+          >
+            Donate Blood
+          </Link>
           <a href="#">About Us</a>
-          <a href="#">FAQs</a>
+          <Link 
+            to="/faq" 
+            className="text-red-500 font-semibold hover:text-red-600"
+          >
+            FAQs
+          </Link>
           <a href="#">Contact Us</a>
         </div>
 

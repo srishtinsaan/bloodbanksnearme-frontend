@@ -5,6 +5,11 @@ import BloodGroups from "./pages/BloodGroups.jsx";
 import Features from "./pages/Features.jsx";
 import GetStartedSection from "./pages/GetStartedScection.jsx";
 import Footer from "./pages/Footer.jsx";
+import Donor from "./pages/Donor.jsx";
+import FAQ from "./pages/FAQ.jsx";
+import { TestTube } from "lucide-react";
+import Testimonials from "./pages/Testimonials.jsx";
+
 function App() {
   return (
     <BrowserRouter>
@@ -36,9 +41,14 @@ function App() {
   <Home />
   <Features/>
   <BloodGroups />
+  <Testimonials/>
+  <FAQ/>
   <GetStartedSection/>
+
   <Footer />
   </div>} />
+            <Route path="/donor" element={<Donor />} />
+            <Route path="/faq" element={<FAQ />} />
             <Route path="/banks" element={<Results/>} />
           </Routes>
         </div>
