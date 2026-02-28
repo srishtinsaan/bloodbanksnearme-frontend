@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {HeartHandshake} from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md">
@@ -33,7 +34,17 @@ function Navbar() {
           >
             FAQs
           </Link>
-          <a href="#">Contact Us</a>
+          <button
+  onClick={() => navigate("/auth/role")}
+  className="px-3 py-[0.9px] bg-black text-black font-medium 
+             rounded-md hover:bg-zinc-200
+             bg-white hover:text-black
+             
+             shadow-sm hover:shadow-md"
+>
+  Sign In
+</button>
+          
         </div>
 
         {/* Mobile Hamburger */}

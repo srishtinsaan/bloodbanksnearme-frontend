@@ -7,8 +7,10 @@ import GetStartedSection from "./pages/GetStartedScection.jsx";
 import Footer from "./pages/Footer.jsx";
 import Donor from "./pages/Donor.jsx";
 import FAQ from "./pages/FAQ.jsx";
-import { TestTube } from "lucide-react";
 import Testimonials from "./pages/Testimonials.jsx";
+import AuthRole from "./pages/AuthRole.jsx";
+import Login from "./components/Login.jsx";
+import Register from "./components/Register.jsx";
 
 function App() {
   return (
@@ -50,6 +52,9 @@ function App() {
             <Route path="/donor" element={<Donor />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/banks" element={<Results/>} />
+            <Route path="/auth/role" element={<AuthRole/>} />
+            <Route path="/auth/login" element={<Login/>} />
+            <Route path="/auth/register" element={<Register/>} />
           </Routes>
         </div>
 

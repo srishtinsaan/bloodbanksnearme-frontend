@@ -4,7 +4,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const fetchBloodBanks = async (pincode) => {
   try {
-    const response = await axios.post(`${BACKEND_URL}/api/bloodbanks`, { pincode });
+    const response = await axios.post(`${BACKEND_URL}/api/bloodbanks`, { pincode }, { withCredentials: true });
     return response.data;
   } catch (error) {
     console.log(error.response);
