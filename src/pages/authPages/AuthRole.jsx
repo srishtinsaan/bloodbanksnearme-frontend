@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, Heart, Droplet, Users } from "lucide-react";
+import { Shield, HeartHandshake, Droplet, Users } from "lucide-react";
 
 function AuthRole() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function AuthRole() {
       id: "donor",
       label: "Donor",
       description: "Register as a blood donor and help save lives",
-      icon: Heart,
+      icon: HeartHandshake,
     },
     {
       id: "recipient",
@@ -33,11 +33,11 @@ function AuthRole() {
 
   const handleRoleSelect = (roleId) => {
     localStorage.setItem("selected_role", roleId);
-    navigate(`/login?role=${roleId}`);
+    navigate(`/auth/login?role=${roleId}`);
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+    <div className="min-h-screen mt-30 lg:mt-5 bg-black flex items-center justify-center p-4">
       {/* Background Grid */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px]" />
@@ -47,8 +47,8 @@ function AuthRole() {
         {/* Header */}
         <div className="text-center mb-12">
           <Link to="/" className="inline-block mb-8">
-            <div className="flex items-center justify-center gap-2 text-white hover:text-red-500 transition-colors">
-              <Heart className="w-6 h-6 text-red-600" />
+            <div className="flex items-center justify-center gap-2 text-white  transition-colors">
+              <HeartHandshake className="w-6 h-6 text-red-600" />
               <span className="text-2xl font-bold">BloodConnect</span>
             </div>
           </Link>
@@ -94,8 +94,8 @@ function AuthRole() {
           })}
         </div>
 
-        {/* Footer */}
-        <div className="text-center text-gray-400">
+        {/* LOGIN Footer */}
+        {/* <div className="text-center text-gray-400">
           <p>
             Already have an account?{" "}
             <Link
@@ -105,7 +105,7 @@ function AuthRole() {
               Log in
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );

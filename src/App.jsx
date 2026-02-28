@@ -1,16 +1,24 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home.jsx";
+import Home from "./pages/homePages/Home.jsx";
 import Results from "./pages/Results.jsx";
-import BloodGroups from "./pages/BloodGroups.jsx";
-import Features from "./pages/Features.jsx";
-import GetStartedSection from "./pages/GetStartedScection.jsx";
-import Footer from "./pages/Footer.jsx";
+import BloodGroups from "./pages/homePages/BloodGroups.jsx";
+import Features from "./pages/homePages/Features.jsx";
+import GetStartedSection from "./pages/homePages/GetStartedScection.jsx";
+import Footer from "./pages/homePages/Footer.jsx";
 import Donor from "./pages/Donor.jsx";
-import FAQ from "./pages/FAQ.jsx";
-import Testimonials from "./pages/Testimonials.jsx";
-import AuthRole from "./pages/AuthRole.jsx";
-import Login from "./components/Login.jsx";
-import Register from "./components/Register.jsx";
+import FAQ from "./pages/homePages/FAQ.jsx";
+import Testimonials from "./pages/homePages/Testimonials.jsx";
+
+import AuthRole from "./pages/authPages/AuthRole.jsx";
+import Login from "./pages/authPages/Login.jsx";
+import Register from "./pages/authPages/Register.jsx";
+
+import Admin from "./pages/adminPages/Admin.jsx"
+import Stats from "./pages/adminPages/Stats.jsx"
+import ManageBanks from "./pages/adminPages/ManageBanks.jsx"
+import ManageUsers from "./pages/adminPages/ManageUsers.jsx"
+import Settings from "./pages/adminPages/Settings.jsx"
+
 
 function App() {
   return (
@@ -55,6 +63,13 @@ function App() {
             <Route path="/auth/role" element={<AuthRole/>} />
             <Route path="/auth/login" element={<Login/>} />
             <Route path="/auth/register" element={<Register/>} />
+
+            <Route path="/dashboard/admin" element={<Admin/>} />
+            <Route path="/dashboard/admin/platform-statistics" element={<Stats/>} />
+            <Route path="/dashboard/admin/manage-banks" element={<ManageBanks/>} />
+            <Route path="/dashboard/admin/manage-users" element={<ManageUsers/>} />
+            <Route path="/dashboard/admin/system-settings" element={<Settings/>} />
+
           </Routes>
         </div>
 
