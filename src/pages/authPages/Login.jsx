@@ -14,7 +14,7 @@ function Login() {
   const storedRole = localStorage.getItem("selected_role");
   const role = urlRole || storedRole || "donor";
 
-  const [username, setUsername] = useState("");
+const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
@@ -29,12 +29,14 @@ function Login() {
     try {
       const response = await axios.post(
         `${BACKEND_URL}/api/auth/login`,
-        { username, password },
+        role === "bloodbank"
+    ? { licenseNumber: identifier, password }
+    : { username: identifier, password },
         { withCredentials: true }
       );
 
 
-      const { role, accessToken } = response.data.data;
+      const { role: userRole, accessToken } = response.data.data;
 
       localStorage.setItem("token", accessToken);
       localStorage.setItem("role", role);
@@ -89,12 +91,18 @@ function Login() {
           )}
 
           <div>
-            <label className="block text-white font-medium mb-3">Username</label>
+            <label className="block text-white font-medium mb-3">
+              {role === "bloodbank" ? "License Number" : "Username"}
+            </label>
             <input
               type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder={
+    role === "bloodbank"
+      ? "Enter your license number"
+      : "Enter your username"
+  }
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
               required
             />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { getCurrentUser } from "../../utils/admin_helper.js" 
-import { Heart, ArrowLeft, Eye, EyeOff, Check, X } from "lucide-react"
+import { HeartHandshake, ArrowLeft, Eye, EyeOff, Check, X } from "lucide-react"
 
 export default function Settings() {
   const navigate = useNavigate()
@@ -87,8 +87,8 @@ export default function Settings() {
       {/* Header */}
       <header className="bg-black border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-white hover:text-red-500 transition-colors">
-            <Heart className="w-6 h-6 text-red-600" />
+          <Link to="/" className="flex items-center gap-2 text-white transition-colors">
+            <HeartHandshake className="w-6 h-6 text-red-600" />
             <span className="text-2xl font-bold">BloodConnect</span>
           </Link>
           <button

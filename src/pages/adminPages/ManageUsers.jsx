@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
+import axios from "axios"
 import { useNavigate, Link } from "react-router-dom"
-import { getCurrentUser } from "../../utils/admin_helper.js" 
-import { Heart, ArrowLeft, User } from "lucide-react"
+import { getCurrentUser } from "../../utils/admin_helper.js"
+import { HeartHandshake, ArrowLeft, User, ChevronLeft, ChevronRight } from "lucide-react"
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
 export default function ManageUsers() {
   const navigate = useNavigate()
@@ -9,19 +12,15 @@ export default function ManageUsers() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("donors")
 
-  // Demo data for users
-  const [donors, setDonors] = useState([
-    { id: 1, username: "donor_demo", email: "donor_demo@gmail.com", verified: true },
-    { id: 2, username: "john_donor", email: "john@gmail.com", verified: false },
-    { id: 3, username: "sarah_blood", email: "sarah@gmail.com", verified: true },
-    { id: 4, username: "mike_donor", email: "mike@gmail.com", verified: false },
-  ])
-
-  const [recipients, setRecipients] = useState([
-    { id: 1, username: "recipient_demo", email: "recipient_demo@gmail.com", verified: true },
-    { id: 2, username: "patient_01", email: "patient01@gmail.com", verified: false },
-    { id: 3, username: "need_blood", email: "need_blood@gmail.com", verified: true },
-  ])
+  const [donors, setDonors] = useState([])
+  const [recipients, setRecipients] = useState([])
+  const [totalDonors, setTotalDonors] = useState(0)
+  const [totalRecipients, setTotalRecipients] = useState(0)
+  const [donorPage, setDonorPage] = useState(1)
+  const [recipientPage, setRecipientPage] = useState(1)
+  const [donorTotalPages, setDonorTotalPages] = useState(1)
+  const [recipientTotalPages, setRecipientTotalPages] = useState(1)
+  const LIMIT = 10
 
   useEffect(() => {
     const currentUser = getCurrentUser()
@@ -30,16 +29,156 @@ export default function ManageUsers() {
       return
     }
     setUser(currentUser)
-    setLoading(false)
   }, [navigate])
 
-  const toggleDonorVerification = (id) => {
-    setDonors(donors.map(d => d.id === id ? { ...d, verified: !d.verified } : d))
+  useEffect(() => {
+    fetchUsers("donor", donorPage)
+  }, [donorPage])
+
+  useEffect(() => {
+    fetchUsers("recipient", recipientPage)
+  }, [recipientPage])
+
+  const fetchUsers = async (role, page) => {
+    setLoading(true)
+    try {
+      const token = localStorage.getItem("token")
+      const response = await axios.get(
+        `${BACKEND_URL}/api/admin/users?role=${role}&page=${page}&limit=${LIMIT}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      )
+      const { users, total } = response.data.data
+
+      if (role === "donor") {
+        setDonors(users)
+        setTotalDonors(total)
+        setDonorTotalPages(Math.ceil(total / LIMIT))
+      } else {
+        setRecipients(users)
+        setTotalRecipients(total)
+        setRecipientTotalPages(Math.ceil(total / LIMIT))
+      }
+    } catch (err) {
+      console.error("Failed to fetch users:", err)
+    }
+    setLoading(false)
   }
 
-  const toggleRecipientVerification = (id) => {
-    setRecipients(recipients.map(r => r.id === id ? { ...r, verified: !r.verified } : r))
+  const toggleVerification = async (id, currentStatus, role) => {
+    try {
+      const token = localStorage.getItem("token")
+      await axios.patch(
+        `${BACKEND_URL}/api/admin/users/${id}/verify`,
+        { isApproved: !currentStatus },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }
+      )
+      if (role === "donor") {
+        setDonors(donors.map(d => d._id === id ? { ...d, isApproved: !currentStatus } : d))
+      } else {
+        setRecipients(recipients.map(r => r._id === id ? { ...r, isApproved: !currentStatus } : r))
+      }
+    } catch (err) {
+      console.error("Failed to update verification:", err)
+    }
   }
+
+  const renderTable = (data, role, currentPage, totalPages, setPage, total) => (
+    <>
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-zinc-800 bg-zinc-800/50">
+                <th className="px-6 py-4 text-left text-gray-300 font-semibold">Username</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-semibold">Email</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-semibold">Status</th>
+                <th className="px-6 py-4 text-left text-gray-300 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                    No {role}s found
+                  </td>
+                </tr>
+              ) : (
+                data.map((u) => (
+                  <tr key={u._id} className="border-b border-zinc-800 hover:bg-zinc-800/30 transition-colors">
+                    <td className="px-6 py-4 text-white">{u.username}</td>
+                    <td className="px-6 py-4 text-gray-400">{u.email || "—"}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        u.isApproved
+                          ? "bg-green-600/20 text-green-400"
+                          : "bg-yellow-600/20 text-yellow-400"
+                      }`}>
+                        {u.isApproved ? "Verified" : "Pending"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <button
+                        onClick={() => toggleVerification(u._id, u.isApproved, role)}
+                        className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                          u.isApproved
+                            ? "bg-red-600/20 text-red-400 hover:bg-red-600/30"
+                            : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
+                        }`}
+                      >
+                        {u.isApproved ? "Unverify" : "Verify"}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Pagination */}
+      <div className="mt-6 flex items-center justify-between">
+        <p className="text-gray-400 text-sm">
+          Showing {(currentPage - 1) * LIMIT + 1}–{Math.min(currentPage * LIMIT, total)} of {total} {role}s
+        </p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPage(p => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+            className="p-2 rounded-lg bg-zinc-800 text-white disabled:opacity-40 hover:bg-zinc-700"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => setPage(i + 1)}
+              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                currentPage === i + 1
+                  ? "bg-red-600 text-white"
+                  : "bg-zinc-800 text-gray-400 hover:bg-zinc-700"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage(p => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-lg bg-zinc-800 text-white disabled:opacity-40 hover:bg-zinc-700"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </>
+  )
 
   if (loading) {
     return (
@@ -51,14 +190,10 @@ export default function ManageUsers() {
 
   return (
     <div className="min-h-screen bg-black">
-      {/* Header */}
       <header className="bg-black border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-white hover:text-red-500 transition-colors"
-          >
-            <Heart className="w-6 h-6 text-red-600" />
+          <Link to="/" className="flex items-center gap-2 text-white transition-colors">
+            <HeartHandshake className="w-6 h-6 text-red-600" />
             <span className="text-2xl font-bold">BloodConnect</span>
           </Link>
           <button
@@ -71,9 +206,7 @@ export default function ManageUsers() {
         </div>
       </header>
 
-      {/* Main content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
-        {/* Title */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Manage Users</h1>
           <p className="text-gray-400">Verify and manage donor and recipient accounts</p>
@@ -91,7 +224,7 @@ export default function ManageUsers() {
           >
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              Donors ({donors.length})
+              Donors ({totalDonors})
             </div>
           </button>
           <button
@@ -104,104 +237,25 @@ export default function ManageUsers() {
           >
             <div className="flex items-center gap-2">
               <Heart className="w-4 h-4" />
-              Recipients ({recipients.length})
+              Recipients ({totalRecipients})
             </div>
           </button>
         </div>
 
-        {/* Donors Table */}
-        {activeTab === "donors" && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-800 bg-zinc-800/50">
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Username</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Email</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Status</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {donors.map((donor) => (
-                    <tr key={donor.id} className="border-b border-zinc-800 hover:bg-zinc-800/30 transition-colors">
-                      <td className="px-6 py-4 text-white">{donor.username}</td>
-                      <td className="px-6 py-4 text-gray-400">{donor.email}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          donor.verified
-                            ? "bg-green-600/20 text-green-400"
-                            : "bg-yellow-600/20 text-yellow-400"
-                        }`}>
-                          {donor.verified ? "Verified" : "Unverified"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => toggleDonorVerification(donor.id)}
-                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                            donor.verified
-                              ? "bg-red-600/20 text-red-400 hover:bg-red-600/30"
-                              : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                          }`}
-                        >
-                          {donor.verified ? "Unverify" : "Verify"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
+        {activeTab === "donors" && renderTable(donors, "donor", donorPage, donorTotalPages, setDonorPage, totalDonors)}
+        {activeTab === "recipients" && renderTable(recipients, "recipient", recipientPage, recipientTotalPages, setRecipientPage, totalRecipients)}
 
-        {/* Recipients Table */}
-        {activeTab === "recipients" && (
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-800 bg-zinc-800/50">
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Username</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Email</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Status</th>
-                    <th className="px-6 py-4 text-left text-gray-300 font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recipients.map((recipient) => (
-                    <tr key={recipient.id} className="border-b border-zinc-800 hover:bg-zinc-800/30 transition-colors">
-                      <td className="px-6 py-4 text-white">{recipient.username}</td>
-                      <td className="px-6 py-4 text-gray-400">{recipient.email}</td>
-                      <td className="px-6 py-4">
-                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                          recipient.verified
-                            ? "bg-green-600/20 text-green-400"
-                            : "bg-yellow-600/20 text-yellow-400"
-                        }`}>
-                          {recipient.verified ? "Verified" : "Unverified"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <button
-                          onClick={() => toggleRecipientVerification(recipient.id)}
-                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                            recipient.verified
-                              ? "bg-red-600/20 text-red-400 hover:bg-red-600/30"
-                              : "bg-green-600/20 text-green-400 hover:bg-green-600/30"
-                          }`}
-                        >
-                          {recipient.verified ? "Unverify" : "Verify"}
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        {/* Summary */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+            <p className="text-gray-400 text-sm">Total Donors</p>
+            <p className="text-3xl font-bold text-white">{totalDonors}</p>
           </div>
-        )}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+            <p className="text-gray-400 text-sm">Total Recipients</p>
+            <p className="text-3xl font-bold text-white">{totalRecipients}</p>
+          </div>
+        </div>
       </main>
     </div>
   )

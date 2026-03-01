@@ -19,6 +19,14 @@ import ManageBanks from "./pages/adminPages/ManageBanks.jsx"
 import ManageUsers from "./pages/adminPages/ManageUsers.jsx"
 import Settings from "./pages/adminPages/Settings.jsx"
 
+import Recipient from "./pages/recipientPages/Recipient.jsx";
+import MyRequests from "./pages/recipientPages/MyRequests.jsx";
+import BloodRequest from "./pages/recipientPages/BloodRequest.jsx"
+
+import Bloodbank from "./pages/Bloodbank.jsx"
+
+import DonorPage from "./pages/donorPages/DonorPage.jsx";
+
 
 function App() {
   return (
@@ -69,6 +77,13 @@ function App() {
             <Route path="/dashboard/admin/manage-banks" element={<ManageBanks/>} />
             <Route path="/dashboard/admin/manage-users" element={<ManageUsers/>} />
             <Route path="/dashboard/admin/system-settings" element={<Settings/>} />
+
+            <Route path="/dashboard/recipient" element={<Recipient/>} />
+            <Route path="/dashboard/recipient/my-requests" element={<MyRequests/>} />
+            <Route path="/dashboard/recipient/blood-request" element={<BloodRequest/>} />
+
+            <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
+            <Route path="/dashboard/donor" element={<DonorPage/>} />
 
           </Routes>
         </div>

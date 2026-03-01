@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {HeartHandshake} from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
+
+import { getCurrentUser } from "../utils/admin_helper.js"
 
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+
+  const [user, setUser] = useState(null);
+
+useEffect(() => {
+  const checkUser = () => {
+    setUser(getCurrentUser());
+  };
+
+  checkUser();
+  window.addEventListener("storage", checkUser);
+
+  return () => window.removeEventListener("storage", checkUser);
+}, []);
 
   return (
     <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md">
@@ -34,16 +49,26 @@ function Navbar() {
           >
             FAQs
           </Link>
-          <button
-  onClick={() => navigate("/auth/role")}
-  className="px-3 py-[0.9px] bg-black text-black font-medium 
-             rounded-md hover:bg-zinc-200
-             bg-white hover:text-black
-             
-             shadow-sm hover:shadow-md"
->
-  Sign In
-</button>
+
+          {/* SIGN IN */}
+          {user ? (
+  <div
+    onClick={() => navigate(`/dashboard/${user.role}`)}
+    className="w-10 h-10 flex items-center justify-center 
+               rounded-full bg-red-600 text-white 
+               font-bold cursor-pointer hover:bg-red-700 transition"
+  >
+    {user.username.charAt(0).toUpperCase()}
+  </div>
+) : (
+  <button
+    onClick={() => navigate("/auth/role")}
+    className="px-3 py-[0.9px] bg-white text-black font-medium 
+               rounded-md hover:bg-zinc-200 shadow-sm hover:shadow-md"
+  >
+    Sign In
+  </button>
+)}
           
         </div>
 

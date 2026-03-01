@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { getCurrentUser, logoutUser } from "../lib/auth" // adjust path
-import { Heart, LogOut, MapPin, Calendar, Droplet, Mail } from "lucide-react"
+import { getCurrentUser, logoutUser} from "../../utils/admin_helper.js" // adjust path
+import { HeartHandshake, LogOut, MapPin, Calendar, Droplet, Mail } from "lucide-react"
 
 export default function Recipient() {
   const navigate = useNavigate()
@@ -19,9 +19,9 @@ export default function Recipient() {
   }, [navigate])
 
   const handleLogout = () => {
-    logoutUser()
-    navigate("/")
-  }
+      logoutUser()
+      navigate("/")
+    }
 
   if (loading) {
     return (
@@ -36,8 +36,8 @@ export default function Recipient() {
       {/* Header */}
       <header className="bg-black border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-white hover:text-red-500 transition-colors">
-            <Heart className="w-6 h-6 text-red-600" />
+          <Link to="/" className="flex items-center gap-2 text-white transition-colors">
+            <HeartHandshake className="w-6 h-6 text-red-600" />
             <span className="text-2xl font-bold">BloodConnect</span>
           </Link>
           <button
@@ -109,7 +109,7 @@ export default function Recipient() {
           </Link>
 
           <Link
-            to="/"
+            to="/dashboard/recipient/blood-request"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
             <Heart className="w-8 h-8 text-red-600 mb-4" />
@@ -118,7 +118,7 @@ export default function Recipient() {
           </Link>
 
           <Link
-            to="/"
+            to="/dashboard/recipient/my-requests"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
             <Calendar className="w-8 h-8 text-red-600 mb-4" />

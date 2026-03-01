@@ -1,4 +1,6 @@
 // Get current user from localStorage
+import axios from "axios";
+
 export const getCurrentUser = () => {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
