@@ -64,7 +64,7 @@ export default function DonorPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4">
-              <Heart className="w-5 h-5 text-red-600 mt-1" />
+              <HeartHandshake className="w-5 h-5 text-red-600 mt-1" />
               <div>
                 <p className="text-gray-400 text-sm">Username</p>
                 <p className="text-white font-semibold">{user?.username}</p>
@@ -119,9 +119,9 @@ export default function DonorPage() {
 
           <Link
             to="/"
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
+            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
-            <Heart className="w-8 h-8 text-red-600 mb-4" />
+            <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
             <h3 className="text-white font-bold mb-2">My Donations</h3>
             <p className="text-gray-400 text-sm">View your donation history</p>
           </Link>
