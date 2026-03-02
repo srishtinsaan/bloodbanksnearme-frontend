@@ -24,7 +24,7 @@ useEffect(() => {
 }, []);
 
   return (
-    <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md">
+    <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md relative">
       <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3 lg:py-1">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
@@ -38,17 +38,20 @@ useEffect(() => {
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
           <Link 
             to="/donor" 
-            className="text-red-500 font-semibold hover:text-red-600"
+            className="font-semibold hover:text-white/90"
           >
             Donate Blood
           </Link>
-          <a href="#">About Us</a>
+          
           <Link 
-            to="/faq" 
-            className="text-red-500 font-semibold hover:text-red-600"
+            to="/donor" 
+            className="font-semibold hover:text-white/90"
           >
-            FAQs
+            Request Blood
           </Link>
+
+          <a href="#" className="hover:text-white/90">About Us</a>
+          
 
           {/* SIGN IN */}
           {user ? (
@@ -107,21 +110,138 @@ useEffect(() => {
 
       {/* Mobile Menu with Animation */}
       <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute md:hidden w-full backdrop-blur-md shadow-md px-6 py-4 flex flex-col gap-4 text-sm"
+  {isOpen && (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="absolute md:hidden w-full bg-black border-b border-white/20 shadow-md px-6 py-6 flex flex-col gap-1 text-sm z-50"
+    >
+      {/* Main Actions */}
+      <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">Main</p>
+      
+      <Link to="/" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Home
+      </Link>
+      
+      <Link to="/donor" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
+        Donate Blood
+      </Link>
+
+      <Link to="/banks" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Find Blood Banks
+      </Link>
+
+      <Link to="/recipient" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Request Blood
+      </Link>
+
+      {/* Info */}
+      <p className="text-xs text-gray-500 uppercase tracking-widest mt-4 mb-2">Info</p>
+
+      <Link to="/faq" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
+        FAQs
+      </Link>
+
+      <a href="#" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+         About Us
+      </a>
+
+      <a href="#" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Contact Us
+      </a>
+
+      <a href="#" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Eligibility Criteria
+      </a>
+
+      <a href="#" onClick={() => setIsOpen(false)}
+        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
+        Emergency Help
+      </a>
+
+      {/* Account */}
+      <p className="text-xs text-gray-500 uppercase tracking-widest mt-4 mb-2">Account</p>
+
+      {user ? (
+        <>
+          <div
+            onClick={() => {
+              navigate(`/dashboard/${user.role}`)
+              setIsOpen(false)
+            }}
+            className="flex items-center gap-3 py-3 border-b border-zinc-800 cursor-pointer hover:text-red-400 transition"
           >
-            <a href="#" className="hover:text-red-400 transition">Donate Blood</a>
-            <a href="#" className="hover:text-red-400 transition">About Us</a>
-            <a href="#" className="hover:text-red-400 transition">FAQs</a>
-            <a href="#" className="hover:text-red-400 transition">Contact Us</a>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 text-white font-bold text-sm">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p className="text-white font-semibold">{user.username}</p>
+              <p className="text-gray-500 text-xs capitalize">{user.role}</p>
+            </div>
+          </div>
+
+          <div
+            onClick={() => {
+              navigate(`/dashboard/${user.role}`)
+              setIsOpen(false)
+            }}
+            className="flex items-center gap-3 py-3 border-b border-zinc-800 cursor-pointer hover:text-red-400 transition"
+          >
+            My Dashboard
+          </div>
+
+          <div
+            onClick={() => {
+              localStorage.removeItem("token")
+              localStorage.removeItem("role")
+              localStorage.removeItem("username")
+              setUser(null)
+              setIsOpen(false)
+              navigate("/")
+            }}
+            className="flex items-center gap-3 py-3 cursor-pointer text-red-500 hover:text-red-400 transition"
+          >
+            Logout
+          </div>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => {
+              navigate("/auth/role")
+              setIsOpen(false)
+            }}
+            className="w-full mt-2 px-3 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition"
+          >
+            Sign In
+          </button>
+          <button
+            onClick={() => {
+              navigate("/auth/role")
+              setIsOpen(false)
+            }}
+            className="w-full mt-2 px-3 py-3 bg-zinc-800 text-white font-medium rounded-lg hover:bg-zinc-700 transition"
+          >
+            Register
+          </button>
+        </>
+      )}
+
+      {/* Bottom padding */}
+      <div className="h-6" />
+    </motion.div>
+  )}
+</AnimatePresence>
     </nav>
   );
 }

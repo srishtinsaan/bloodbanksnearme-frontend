@@ -1,5 +1,5 @@
 import { useNavigate, Link } from "react-router-dom";
-import { Shield, HeartHandshake, Droplet, Users } from "lucide-react";
+import { Shield, HeartHandshake, Droplet, Users , ArrowLeft} from "lucide-react";
 
 function AuthRole() {
   const navigate = useNavigate();
@@ -37,11 +37,22 @@ function AuthRole() {
   };
 
   return (
-    <div className="min-h-screen mt-30 lg:mt-5 bg-black flex items-center justify-center p-4">
+    <div>
+
+    <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-400 mb-3 mt-5 ml-3 hover:text-white"
+        >
+          <ArrowLeft size={18} />
+          Back
+        </button>
+    <div className="min-h-screen mt-10 lg:mt-5 bg-black flex items-center justify-center p-4">
       {/* Background Grid */}
+      
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:50px_50px]" />
       </div>
+      
 
       <div className="relative z-10 w-full max-w-6xl">
         {/* Header */}
@@ -107,6 +118,7 @@ function AuthRole() {
           </p>
         </div> */}
       </div>
+    </div>
     </div>
   );
 }
