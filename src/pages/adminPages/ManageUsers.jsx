@@ -236,7 +236,7 @@ export default function ManageUsers() {
             }`}
           >
             <div className="flex items-center gap-2">
-              <Heart className="w-4 h-4" />
+              <HeartHandshake className="w-4 h-4" />
               Recipients ({totalRecipients})
             </div>
           </button>

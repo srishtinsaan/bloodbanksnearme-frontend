@@ -12,11 +12,13 @@ import {
   Zap,
 } from "lucide-react";
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 
 function FormResults({ banks }) {
 
   const [showMap, setShowMap] = useState(false)
+  const navigate = useNavigate();
 
 
   const isNA = (value) => {
@@ -162,15 +164,26 @@ function FormResults({ banks }) {
 
         {/* Action buttons */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <button className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
+          <button
+          onClick={() =>
+    {
+  sessionStorage.setItem("selectedBank", JSON.stringify(bank))
+  navigate("/banks/ai-assistance")
+  }
+  }
+           className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
             <MessageSquare className="w-4 h-4" />
             AI Assistance
           </button>
-          <button className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
+          <button 
+          onClick={() => navigate("/")}
+           className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
             <Droplet className="w-4 h-4" />
             Request Blood
           </button>
-          <button className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
+          <button 
+          onClick={() => navigate("/")}
+          className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
             <Calendar className="w-4 h-4" />
             Schedule Donation
           </button>
@@ -180,7 +193,7 @@ function FormResults({ banks }) {
           >
             <MapIcon className="w-4 h-4" />
             Find on Map
-          </button>
+          </button> 
         </div>
 
         {/* Map display */}

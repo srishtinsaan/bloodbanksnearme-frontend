@@ -26,6 +26,7 @@ import BloodRequest from "./pages/recipientPages/BloodRequest.jsx"
 import Bloodbank from "./pages/Bloodbank.jsx"
 
 import DonorPage from "./pages/donorPages/DonorPage.jsx";
+import BankAssistance from "./components/BankAssistance.jsx";
 
 
 function App() {
@@ -84,6 +85,10 @@ function App() {
 
             <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
             <Route path="/dashboard/donor" element={<DonorPage/>} />
+
+            <Route path="/banks/ai-assistance" element={<BankAssistance/>} />
+
+            
 
           </Routes>
         </div>

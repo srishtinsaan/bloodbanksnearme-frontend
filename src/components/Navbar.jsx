@@ -27,12 +27,12 @@ useEffect(() => {
     <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md">
       <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3 lg:py-1">
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <HeartHandshake className="h-12 w-12 sm:h-14 sm:w-14 text-red-500" />
-          <div className="flex flex-col leading-none">
-            <h1 className="font-bold text-lg sm:text-xl">BloodConnect</h1>
-          </div>
-        </div>
+        <Link to="/" className="flex items-center gap-2">
+  <HeartHandshake className="h-12 w-12 sm:h-14 sm:w-14 text-red-500" />
+  <div className="flex flex-col leading-none">
+    <h1 className="font-bold text-lg sm:text-xl">BloodConnect</h1>
+  </div>
+</Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">

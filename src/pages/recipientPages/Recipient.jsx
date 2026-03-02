@@ -64,7 +64,7 @@ export default function Recipient() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex items-start gap-4">
-              <Heart className="w-5 h-5 text-red-600 mt-1" />
+              <HeartHandshake className="w-5 h-5 text-red-600 mt-1" />
               <div>
                 <p className="text-gray-400 text-sm">Username</p>
                 <p className="text-white font-semibold">{user?.username}</p>
@@ -112,7 +112,7 @@ export default function Recipient() {
             to="/dashboard/recipient/blood-request"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
-            <Heart className="w-8 h-8 text-red-600 mb-4" />
+            <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
             <h3 className="text-white font-bold mb-2">Request Blood</h3>
             <p className="text-gray-400 text-sm">Submit a blood request</p>
           </Link>

@@ -101,7 +101,7 @@ export default function Admin() {
           </Link>
 
           <Link to="/dashboard/admin/system-settings" className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 transition-colors">
-            <Heart className="w-8 h-8 text-red-600 mb-4" />
+            <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
             <h3 className="text-white font-bold mb-2">System Settings</h3>
             <p className="text-gray-400 text-sm mb-4">Configure platform settings and policies</p>
             <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-block">
