@@ -188,26 +188,21 @@ function FormResults({ banks }) {
             Schedule Donation
           </button>
           <button
-            onClick={() => setShowMap(!showMap)}
-            className="bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl flex items-center justify-center gap-2"
-          >
-            <MapIcon className="w-4 h-4" />
-            Find on Map
-          </button> 
+  onClick={() => {
+    console.log("bank keys:", Object.keys(bank))
+    window.open(
+      `https://www.google.com/maps?q=${bank[" Latitude"]},${bank[" Longitude"]}`,
+      "_blank"
+    )
+  }}
+  className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2"
+>
+  <MapIcon className="w-4 h-4" />
+  Find on Map
+</button>
         </div>
 
-        {/* Map display */}
-        {showMap && (
-          <div className="mt-6 bg-black/40 border border-zinc-800 rounded-xl overflow-hidden">
-            <iframe
-              width="100%"
-              height="400"
-              style={{ border: 0 }}
-              loading="lazy"
-              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd2xOKErF4MsroWUqRHks&q=${bank[" Latitude"]},${bank[" Longitude"]}`}
-            />
-          </div>
-        )}
+        
       </div>
     ))}
     </div>
