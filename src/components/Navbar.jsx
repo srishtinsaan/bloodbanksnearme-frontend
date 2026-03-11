@@ -23,6 +23,16 @@ useEffect(() => {
   return () => window.removeEventListener("storage", checkUser);
 }, []);
 
+const handleProtectedRoute = (path, role) => {
+  const currentUser = getCurrentUser()
+  if (currentUser) {
+    navigate(path)
+  } else {
+    navigate(`/auth/login?role=${role}`)
+  }
+  setIsOpen(false)
+}
+
   return (
     <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md relative">
       <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3 lg:py-1">
@@ -36,22 +46,26 @@ useEffect(() => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
-          <Link 
-            to="/donor" 
-            className="font-semibold hover:text-white/90"
-          >
-            Donate Blood
-          </Link>
-          
-          <Link 
-            to="/donor" 
-            className="font-semibold hover:text-white/90"
-          >
-            Request Blood
-          </Link>
+          <button
+  onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
+  className="font-semibold hover:text-white/90"
+>
+  Donate Blood
+</button>
 
-          <a href="#" className="hover:text-white/90">About Us</a>
-          
+<button
+  onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
+  className="font-semibold hover:text-white/90"
+>
+  Request Blood
+</button>
+
+<button
+  onClick={() => navigate("/about-us")}
+  className="font-semibold hover:text-white/90"
+>
+ About Us
+</button>          
 
           {/* SIGN IN */}
           {user ? (
@@ -126,12 +140,12 @@ useEffect(() => {
         Home
       </Link>
       
-      <Link to="/donor" onClick={() => setIsOpen(false)}
+      <Link to="/dashboard/donor/register" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
         Donate Blood
       </Link>
 
-      <Link to="/banks" onClick={() => setIsOpen(false)}
+      <Link to="/" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
         Find Blood Banks
       </Link>
@@ -149,10 +163,10 @@ useEffect(() => {
         FAQs
       </Link>
 
-      <a href="#" onClick={() => setIsOpen(false)}
+      <Link to="/about-us" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
          About Us
-      </a>
+      </Link>
 
       <a href="#" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">

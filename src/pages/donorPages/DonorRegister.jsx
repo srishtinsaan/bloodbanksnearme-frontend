@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 
-export default function Donor() {
+export default function DonorRegister() {
   const [formData, setFormData] = useState({
     fullName: "",
     age: "",

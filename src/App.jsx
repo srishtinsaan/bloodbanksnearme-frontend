@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/homePages/Home.jsx";
+import AboutUs from "./pages/AboutUs.jsx";
 import Results from "./pages/Results.jsx";
 import BloodGroups from "./pages/homePages/BloodGroups.jsx";
 import Features from "./pages/homePages/Features.jsx";
 import GetStartedSection from "./pages/homePages/GetStartedScection.jsx";
 import Footer from "./pages/homePages/Footer.jsx";
-import Donor from "./pages/Donor.jsx";
 import FAQ from "./pages/homePages/FAQ.jsx";
 import Testimonials from "./pages/homePages/Testimonials.jsx";
 
@@ -24,9 +24,11 @@ import MyRequests from "./pages/recipientPages/MyRequests.jsx";
 import BloodRequest from "./pages/recipientPages/BloodRequest.jsx"
 
 import Bloodbank from "./pages/Bloodbank.jsx"
+import BankAssistance from "./components/BankAssistance.jsx";
 
 import DonorPage from "./pages/donorPages/DonorPage.jsx";
-import BankAssistance from "./components/BankAssistance.jsx";
+import DonorRegister from "./pages/donorPages/DonorRegister.jsx";
+
 
 
 function App() {
@@ -66,7 +68,8 @@ function App() {
 
   <Footer />
   </div>} />
-            <Route path="/donor" element={<Donor />} />
+            
+            <Route path="/about-us" element={<AboutUs />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/banks" element={<Results/>} />
             <Route path="/auth/role" element={<AuthRole/>} />
@@ -85,6 +88,8 @@ function App() {
 
             <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
             <Route path="/dashboard/donor" element={<DonorPage/>} />
+            <Route path="/dashboard/donor/register" element={<DonorRegister />} />
+
 
             <Route path="/banks/ai-assistance" element={<BankAssistance/>} />
 

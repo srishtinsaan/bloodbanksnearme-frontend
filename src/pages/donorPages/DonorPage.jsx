@@ -109,7 +109,7 @@ export default function DonorPage() {
           </Link>
 
           <Link
-            to="/"
+            to="/dashboard/donor/register"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
             <Calendar className="w-8 h-8 text-red-600 mb-4" />
