@@ -51,145 +51,249 @@ function FormResults({ banks }) {
         </div>
 
         {/* Info grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column - Contact info */}
-          <div className="lg:col-span-1 space-y-6">
-            <div>
-              <h3 className="text-lg font-bold text-white mb-4">Location</h3>
-              <div className="space-y-3">
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">Address</p>
-                    <p className="text-white text-sm">{bank[" Address"]}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Droplet className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">District</p>
-                    <p className="text-white text-sm">{bank[" District"]}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">State</p>
-                    <p className="text-white text-sm">{bank[" State"]}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Info grid */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            {/* Contact section */}
-            <div>
-              <h3 className="text-lg font-bold text-white mb-4">Contact</h3>
-              <div className="space-y-3">
-                {!isNA(bank[" Mobile"]) && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-red-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-400 mb-1">Phone</p>
-                      <p className="text-white text-sm">{bank[" Mobile"]}</p>
-                    </div>
-                  </div>
-                )}
-                {!isNA(bank[" Helpline"]) && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-5 h-5 text-red-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-400 mb-1">Helpline</p>
-                      <p className="text-white text-sm">{bank[" Helpline"]}</p>
-                    </div>
-                  </div>
-                )}
-                {!isNA(bank[" Email"]) && (
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-red-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-400 mb-1">Email</p>
-                      <p className="text-white text-sm break-all">{bank[" Email"]}</p>
-                    </div>
-                  </div>
-                )}
-                {!isNA(bank[" Website"]) && (
-                  <div className="flex items-center gap-3">
-                    <Zap className="w-5 h-5 text-red-600 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm text-gray-400 mb-1">Website</p>
-                      <p className="text-white text-sm break-all">{bank[" Website"]}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+  {/* Column 1 - Location */}
+  <div>
+    <h3 className="text-lg font-bold text-white mb-4">Location</h3>
 
-          {/* Right column - Nodal officer info */}
-          <div className="lg:col-span-2">
-            <h3 className="text-lg font-bold text-white mb-4">Nodal Officer</h3>
-            <div className="bg-black/40 border border-zinc-800 rounded-xl p-6 space-y-4">
-              {!isNA(bank["  Nodal Officer"]) && (
-                <div className="flex items-start gap-3">
-                  <Building2 className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">Name</p>
-                    <p className="text-white text-sm font-medium">{bank["  Nodal Officer"]}</p>
-                  </div>
-                </div>
-              )}
-              {!isNA(bank[" Contact Nodal Officer"]) && (
-                <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">Phone</p>
-                    <p className="text-white text-sm">{bank[" Contact Nodal Officer"]}</p>
-                  </div>
-                </div>
-              )}
-              {!isNA(bank[" Email Nodal Officer"]) && (
-                <div className="flex items-start gap-3">
-                  <Mail className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
-                  <div>
-                    <p className="text-sm text-gray-400 mb-1">Email</p>
-                    <p className="text-white text-sm break-all">{bank[" Email Nodal Officer"]}</p>
-                  </div>
-                </div>
-              )}
-            </div>
+    <div className="space-y-3">
+      <div className="flex items-start gap-3">
+        <MapPin className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+        <div>
+          <p className="text-sm text-gray-400 mb-1">Address</p>
+          <p className="text-white text-sm">{bank[" Address"]}</p>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-3">
+        <Droplet className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+        <div>
+          <p className="text-sm text-gray-400 mb-1">District</p>
+          <p className="text-white text-sm">{bank[" District"]}</p>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-3">
+        <MapPin className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+        <div>
+          <p className="text-sm text-gray-400 mb-1">State</p>
+          <p className="text-white text-sm">{bank[" State"]}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* Column 2 - Contact */}
+  <div>
+    <h3 className="text-lg font-bold text-white mb-4">Contact</h3>
+
+    <div className="space-y-3">
+
+      {!isNA(bank[" Mobile"]) && (
+        <div className="flex items-center gap-3">
+          <Phone className="w-5 h-5 text-red-600 flex-shrink-0" />
+
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Phone</p>
+            <p className="text-white text-sm">{bank[" Mobile"]}</p>
           </div>
         </div>
-       
+      )}
+
+      {!isNA(bank[" Helpline"]) && (
+        <div className="flex items-center gap-3">
+          <Phone className="w-5 h-5 text-red-600 flex-shrink-0" />
+
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Helpline</p>
+            <p className="text-white text-sm">{bank[" Helpline"]}</p>
+          </div>
+        </div>
+      )}
+
+      {!isNA(bank[" Email"]) && (
+        <div className="flex items-center gap-3">
+          <Mail className="w-5 h-5 text-red-600 flex-shrink-0" />
+
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Email</p>
+            <p className="text-white text-sm break-all">
+              {bank[" Email"]}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {!isNA(bank[" Website"]) && (
+        <div className="flex items-center gap-3">
+          <Zap className="w-5 h-5 text-red-600 flex-shrink-0" />
+
+          <div>
+            <p className="text-sm text-gray-400 mb-1">Website</p>
+
+            <a
+              href={
+                bank[" Website"].startsWith("http")
+                  ? bank[" Website"]
+                  : `https://${bank[" Website"]}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-red-400 hover:text-red-300 text-sm break-all underline underline-offset-2 transition-colors"
+            >
+              {bank[" Website"]}
+            </a>
+          </div>
+        </div>
+      )}
+
+    </div>
+  </div>
+
+  {/* Column 3 - Nodal Officer */}
+  {(!isNA(bank[" Nodal Officer"]) ||
+    !isNA(bank[" Contact Nodal Officer"]) ||
+    !isNA(bank[" Email Nodal Officer"])) ? (
+
+    <div>
+      <h3 className="text-lg font-bold text-white mb-4">
+        Nodal Officer
+      </h3>
+
+      <div className="bg-black/40 border border-zinc-800 rounded-xl p-6 space-y-4">
+
+        {!isNA(bank[" Nodal Officer"]) && (
+          <div className="flex items-start gap-3">
+            <Building2 className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+            <div>
+              <p className="text-sm text-gray-400 mb-1">Name</p>
+              <p className="text-white text-sm font-medium">
+                {bank[" Nodal Officer"]}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isNA(bank[" Contact Nodal Officer"]) && (
+          <div className="flex items-start gap-3">
+            <Phone className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+            <div>
+              <p className="text-sm text-gray-400 mb-1">Phone</p>
+              <p className="text-white text-sm">
+                {bank[" Contact Nodal Officer"]}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {!isNA(bank[" Email Nodal Officer"]) && (
+          <div className="flex items-start gap-3">
+            <Mail className="w-5 h-5 text-red-600 mt-1 flex-shrink-0" />
+
+            <div>
+              <p className="text-sm text-gray-400 mb-1">Email</p>
+              <p className="text-white text-sm break-all">
+                {bank[" Email Nodal Officer"]}
+              </p>
+            </div>
+          </div>
+        )}
+
+      </div>
+    </div>
+
+  ) : (
+    <div />
+  )}
+
+</div>
 
         {/* Action buttons */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          
-          <button 
-          onClick={() => navigate("/")}
-           className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
-            <Droplet className="w-4 h-4" />
-            Request Blood
-          </button>
-          <button 
-          onClick={() => navigate("/")}
-          className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Schedule Donation
-          </button>
-          <button
-  onClick={() => {
-    console.log("bank keys:", Object.keys(bank))
-    window.open(
-      `https://www.google.com/maps?q=${bank[" Latitude"]},${bank[" Longitude"]}`,
-      "_blank"
-    )
-  }}
-  className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2"
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+ <button
+  onClick={() => navigate("/")}
+  className="
+    group
+    bg-zinc-900
+    hover:bg-zinc-800
+    border border-zinc-700
+    text-white
+    py-4 px-5
+    rounded-2xl
+    flex items-center justify-center gap-3
+    shadow-lg
+    transition-all duration-300
+    hover:-translate-y-1
+    active:scale-[0.98]
+  "
 >
-  <MapIcon className="w-4 h-4" />
-  Find on Map
+  <Droplet className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+
+  <span className="font-medium tracking-wide">
+    Request Blood
+  </span>
 </button>
-        </div>
+
+  <button
+    onClick={() => navigate("/")}
+    className="
+      group
+      bg-zinc-900
+      hover:bg-zinc-800
+      border border-zinc-700
+      text-white
+      py-4 px-5
+      rounded-2xl
+      flex items-center justify-center gap-3
+      shadow-lg
+      transition-all duration-300
+      hover:-translate-y-1
+      active:scale-[0.98]
+    "
+  >
+    <Calendar className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+    <span className="font-medium tracking-wide">
+      Schedule Donation
+    </span>
+  </button>
+
+  <button
+    onClick={() => {
+      window.open(
+        `https://www.google.com/maps?q=${bank[" Latitude"]},${bank[" Longitude"]}`,
+        "_blank"
+      )
+    }}
+    className="
+      group
+      bg-zinc-900
+      hover:bg-zinc-800
+      border border-zinc-700
+      text-white
+      py-4 px-5
+      rounded-2xl
+      flex items-center justify-center gap-3
+      shadow-lg
+      transition-all duration-300
+      hover:-translate-y-1
+      active:scale-[0.98]
+    "
+  >
+    <MapIcon className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+    <span className="font-medium tracking-wide">
+      Find on Map
+    </span>
+  </button>
+
+</div>
 
         
       </div>
