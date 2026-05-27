@@ -12,52 +12,61 @@ function Login() {
   const queryParams = new URLSearchParams(location.search);
   const urlRole = queryParams.get("role");
   const storedRole = localStorage.getItem("selected_role");
-  const role = urlRole || storedRole || "donor";
+  const role = urlRole || storedRole || "user";
 
-const [identifier, setIdentifier] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // handleLogin inside the component
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      const payload =
+        role === "bloodbank"
+          ? { licenseNumber: identifier, password }
+          : { username: identifier, password };
+
       const response = await axios.post(
         `${BACKEND_URL}/api/auth/login`,
-        role === "bloodbank"
-    ? { licenseNumber: identifier, password }
-    : { username: identifier, password },
+        payload,
         { withCredentials: true }
       );
 
+      const { accessToken, role: backendRole, mode } = response.data.data;
 
-      const { role: userRole, accessToken } = response.data.data;
-
-      localStorage.setItem("token", accessToken);
-      localStorage.setItem("role", role);
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("role", backendRole);
       localStorage.setItem("username", response.data.data.user.username);
+      if (mode) localStorage.setItem("mode", mode);
 
-      navigate(`/dashboard/${role}`);
+      if (backendRole === "admin") {
+        navigate("/dashboard/admin");
+      } else if (backendRole === "bloodbank") {
+        navigate("/dashboard/bloodbank");
+      } else {
+        if (mode === "donor") {
+          navigate("/dashboard/donor");
+        } else if (mode === "recipient") {
+          navigate("/dashboard/recipient");
+        } else {
+          navigate("/auth/user-mode");
+        }
+      }
 
     } catch (err) {
       setError(err.response?.data?.message || "Invalid credentials");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const getRoleLabel = () => {
-    const labels = {
-      admin: "Admin",
-      bloodbank: "Blood Bank",
-      donor: "Donor",
-      recipient: "Recipient",
-    };
+    const labels = { admin: "Admin", bloodbank: "Blood Bank", user: "User" };
     return labels[role] || "User";
   };
 
@@ -77,8 +86,7 @@ const [identifier, setIdentifier] = useState("");
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">Sign In</h1>
           <p className="text-gray-400">
-            Sign in as{" "}
-            <span className="text-red-600 font-semibold">{getRoleLabel()}</span>
+            Sign in as <span className="text-red-600 font-semibold">{getRoleLabel()}</span>
           </p>
         </div>
 
@@ -96,11 +104,7 @@ const [identifier, setIdentifier] = useState("");
             </label>
             <input
               type="text"
-              placeholder={
-    role === "bloodbank"
-      ? "Enter your license number"
-      : "Enter your username"
-  }
+              placeholder={role === "bloodbank" ? "Enter your license number" : "Enter your username"}
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
@@ -138,7 +142,7 @@ const [identifier, setIdentifier] = useState("");
           </button>
         </form>
 
-        {(role === "donor" || role === "recipient" || role === "bloodbank") && (
+        {(role === "user" || role === "bloodbank") && (
           <div className="text-center mt-6">
             <p className="text-gray-400">
               Don't have an account?{" "}

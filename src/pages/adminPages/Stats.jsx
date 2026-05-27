@@ -12,12 +12,11 @@ export default function Stats() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [statistics, setStatistics] = useState({
-    bloodBanks: 0,
-    donors: 0,
-    recipients: 0,
-    registeredBloodBanks: 0, 
+  users: 0,
+  bloodBanks: 0,
+  registeredBloodBanks: 0,
   dbBloodBanks: 0,
-  })
+})
 
 
 
@@ -52,18 +51,8 @@ export default function Stats() {
   { name: "Registered Banks", value: statistics.registeredBloodBanks, color: "#f87171" },
 ]
 
-const userChartData = [
-  { name: "Donors", value: statistics.donors, color: "#16a34a" },
-  { name: "Recipients", value: statistics.recipients, color: "#0284c7" },
-]
 
-  const chartData = [
-    { name: "Blood Banks", value: statistics.bloodBanks, color: "#dc2626" },
-    { name: "Donors", value: statistics.donors, color: "#16a34a" },
-    { name: "Recipients", value: statistics.recipients, color: "#0284c7" },
-  ]
-
-  const totalUsers = statistics.bloodBanks + statistics.donors + statistics.recipients
+const totalUsers = statistics.users
 
   if (loading) {
     return (
@@ -98,23 +87,16 @@ const userChartData = [
           <p className="text-gray-400">Overview of registered users and blood banks</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
             <p className="text-gray-400 text-sm mb-2">Total Users</p>
-            <p className="text-3xl font-bold text-white">{statistics.recipients + statistics.donors}</p>
+            <p className="text-3xl font-bold text-white">{statistics.users}</p>
           </div>
           <div className="bg-zinc-900 border border-red-600/30 rounded-xl p-6">
             <p className="text-gray-400 text-sm mb-2">Blood Banks</p>
             <p className="text-3xl font-bold text-red-500">{statistics.bloodBanks}</p>
           </div>
-          <div className="bg-zinc-900 border border-green-600/30 rounded-xl p-6">
-            <p className="text-gray-400 text-sm mb-2">Donors</p>
-            <p className="text-3xl font-bold text-green-500">{statistics.donors}</p>
-          </div>
-          <div className="bg-zinc-900 border border-blue-600/30 rounded-xl p-6">
-            <p className="text-gray-400 text-sm mb-2">Recipients</p>
-            <p className="text-3xl font-bold text-blue-500">{statistics.recipients}</p>
-          </div>
+          
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
@@ -123,8 +105,8 @@ const userChartData = [
     Distribution Chart
   </h2>
 
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    {/* Blood Banks Chart */}
+<div className="grid grid-cols-1 gap-8">
+      {/* Blood Banks Chart */}
     <div>
       <h3 className="text-white font-semibold text-center mb-4">Blood Banks</h3>
       <div className="w-full h-72">
@@ -158,44 +140,12 @@ const userChartData = [
       </div>
     </div>
 
-    {/* Users Chart */}
-    <div>
-      <h3 className="text-white font-semibold text-center mb-4">Users</h3>
-      <div className="w-full h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsPieChart>
-            <Pie
-              data={userChartData}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-              outerRadius={90}
-              dataKey="value"
-            >
-              {userChartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip
-              formatter={(value) => [`${value}`, "Count"]}
-              contentStyle={{
-                backgroundColor: "#18181b",
-                border: "1px solid #27272a",
-                borderRadius: "8px",
-                color: "#ffffff",
-              }}
-            />
-            <Legend iconType="circle" />
-          </RechartsPieChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+    
   </div>
 
-  {/* Legend details - now 4 cards */}
+  {/* Legend details*/}
   <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-    {[...bankChartData, ...userChartData].map((item, index) => (
+    {bankChartData.map((item, index) => (
       <div key={index} className="bg-zinc-800/50 rounded-lg p-4 border border-zinc-700">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />

@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios"; 
-
-
+import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { HeartHandshake, Eye, EyeOff, AlertCircle, CheckCircle } from "lucide-react";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
 
 export default function Register() {
   const navigate = useNavigate();
@@ -15,9 +12,9 @@ export default function Register() {
   const queryParams = new URLSearchParams(location.search);
   const urlRole = queryParams.get("role");
   const storedRole = localStorage.getItem("selected_role");
-  const role = urlRole || storedRole || "donor";
+  const baseRole = urlRole || storedRole || "user";
 
-
+  console.log("baseRole:", baseRole);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -41,171 +38,98 @@ export default function Register() {
   };
 
   const handleRegister = async (e) => {
-  e.preventDefault();
-  setError("");
-  setSuccess(false);
-  setLoading(true);
+    e.preventDefault();
+    setError("");
+    setSuccess(false);
+    setLoading(true);
 
-  // Basic validation
-  if (!formData.username || !formData.password) {
-    setError("Username and password are required");
-    setLoading(false);
-    return;
-  }
+    if (!formData.username || !formData.password) {
+      setError("Username and password are required");
+      setLoading(false);
+      return;
+    }
 
-  if (formData.password !== formData.confirmPassword) {
-    setError("Passwords do not match");
-    setLoading(false);
-    return;
-  }
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
 
-  if (formData.password.length < 6) {
-    setError("Password must be at least 6 characters");
-    setLoading(false);
-    return;
-  }
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
 
-  if (role === "bloodbank" && (!formData.phone || !formData.pincode || !formData.licenseNumber)) {
-    setError("Please fill all required fields for blood bank registration");
-    setLoading(false);
-    return;
-  }
+    if (baseRole === "bloodbank" && (!formData.phone || !formData.pincode || !formData.licenseNumber)) {
+      setError("Please fill all required fields for blood bank registration");
+      setLoading(false);
+      return;
+    }
 
-  if ((role === "donor" || role === "recipient") && !formData.email) {
-    setError("Email is required");
-    setLoading(false);
-    return;
-  }
+    if (baseRole === "user" && !formData.email) {
+      setError("Email is required");
+      setLoading(false);
+      return;
+    }
 
-  try {
-    await axios.post(
-      `${BACKEND_URL}/api/auth/register`,
-      {
+    try {
+      // Step 1: Register
+      // ✅ Always send role as baseRole ("user", "bloodbank", "admin") — NOT donor/recipient
+      await axios.post(`${BACKEND_URL}/api/auth/register`, {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        role,
+        role: baseRole,
         phone: formData.phone,
         pincode: formData.pincode,
         licenseNumber: formData.licenseNumber,
-      }
-    );
+      });
 
-    setSuccess(true);
-    setTimeout(() => {
-      navigate(`/auth/login?role=${role}`);
-    }, 2000);
+      setSuccess(true);
 
-  } catch (err) {
-    setError(err.response?.data?.message || "Registration failed. Try again.");
-  }
+      // Step 2: Auto-login after register
+      const loginPayload =
+        baseRole === "bloodbank"
+          ? { licenseNumber: formData.licenseNumber, password: formData.password }
+          : { username: formData.username, password: formData.password };
 
-  setLoading(false);
-};
+      const loginRes = await axios.post(
+        `${BACKEND_URL}/api/auth/login`,
+        loginPayload,
+        { withCredentials: true }
+      );
 
-  const getRoleLabel = () => {
-    const labels = {
-      admin: "Admin",
-      bloodbank: "Blood Bank",
-      donor: "Donor",
-      recipient: "Recipient",
-    };
-    return labels[role] || "User";
+      const { accessToken, role, mode } = loginRes.data.data;
+
+      // Step 3: Save to localStorage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("role", role);
+      if (mode) localStorage.setItem("mode", mode);
+
+      // Step 4: Redirect based on role
+      setTimeout(() => {
+        if (role === "admin") {
+          navigate("/dashboard/admin");
+        } else if (role === "bloodbank") {
+          navigate("/dashboard/bloodbank");
+        } else {
+          // user — mode is null on fresh register, show mode selection
+          navigate("/auth/user-mode");
+        }
+      }, 1500);
+
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed. Try again.");
+    }
+
+    setLoading(false);
   };
 
-  const renderFields = () => {
-    switch (role) {
-      case "bloodbank":
-        return (
-          <>
-            <div>
-              <label className="block text-white font-medium mb-3">Bank Name</label>
-              <input
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="e.g., Red Cross Blood Bank"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-white font-medium mb-3">Email (Optional)</label>
-              <input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="bank@example.com"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-              />
-            </div>
-            <div>
-              <label className="block text-white font-medium mb-3">Phone Number</label>
-              <input
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="9876543210"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-white font-medium mb-3">Pin Code</label>
-              <input
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleChange}
-                placeholder="110001"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-white font-medium mb-3">License Number</label>
-              <input
-                name="licenseNumber"
-                value={formData.licenseNumber}
-                onChange={handleChange}
-                placeholder="LIC123456"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-          </>
-        );
-
-
-      default:
-        return (
-          <>
-            <div>
-              <label className="block text-white font-medium mb-3">Username</label>
-              <input
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder="Choose a username"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-white font-medium mb-3">Email</label>
-              <input
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="your@example.com"
-                className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
-                required
-              />
-            </div>
-          </>
-        );
-    }
+  const getRoleLabel = () => {
+    if (baseRole === "bloodbank") return "Blood Bank";
+    if (baseRole === "admin") return "Admin";
+    return "User";
   };
 
   return (
@@ -219,15 +143,16 @@ export default function Register() {
             </div>
           </Link>
           <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
-          <p className="text-gray-400">Register as <span className="text-red-600 font-semibold">{getRoleLabel()}</span></p>
+          <p className="text-gray-400">
+            Register as <span className="text-red-600 font-semibold">{getRoleLabel()}</span>
+          </p>
         </div>
 
         {success && (
           <div className="bg-green-600/20 border border-green-600/50 rounded-lg p-4 mb-6 flex gap-3">
             <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-green-200 font-semibold">Account created successfully!</p>
-              <p className="text-green-200/80 text-sm">Redirecting to login...</p>
+              <p className="text-green-200 font-semibold">Account created! Logging you in...</p>
             </div>
           </div>
         )}
@@ -240,9 +165,92 @@ export default function Register() {
             </div>
           )}
 
-          {renderFields()}
+          {baseRole === "bloodbank" ? (
+            <>
+              <div>
+                <label className="block text-white font-medium mb-3">Bank Name</label>
+                <input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="e.g., Red Cross Blood Bank"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-3">Email (Optional)</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="bank@example.com"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-3">Phone Number</label>
+                <input
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="9876543210"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-3">Pin Code</label>
+                <input
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder="110001"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-3">License Number</label>
+                <input
+                  name="licenseNumber"
+                  value={formData.licenseNumber}
+                  onChange={handleChange}
+                  placeholder="LIC123456"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <label className="block text-white font-medium mb-3">Username</label>
+                <input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Choose a username"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-white font-medium mb-3">Email</label>
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="your@example.com"
+                  className="w-full bg-black border border-zinc-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-red-600 transition-colors"
+                  required
+                />
+              </div>
+            </>
+          )}
 
-          {/* Password */}
           <div>
             <label className="block text-white font-medium mb-3">Password</label>
             <div className="relative">
@@ -265,7 +273,6 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Confirm password */}
           <div>
             <label className="block text-white font-medium mb-3">Confirm Password</label>
             <div className="relative">
@@ -298,11 +305,16 @@ export default function Register() {
         </form>
 
         <div className="text-center mt-6 text-gray-400">
-          Already have an account? <Link to={`/auth/login?role=${role}`} className="text-red-600 hover:text-red-500 font-semibold">Sign in</Link>
+          Already have an account?{" "}
+          <Link to={`/auth/login?role=${baseRole}`} className="text-red-600 hover:text-red-500 font-semibold">
+            Sign in
+          </Link>
         </div>
 
         <div className="text-center mt-4">
-          <Link to="/" className="text-gray-500 text-sm">← Choose a different role</Link>
+          <Link to="/auth/role" className="text-gray-500 text-sm">
+            ← Choose a different role
+          </Link>
         </div>
       </div>
     </div>

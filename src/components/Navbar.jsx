@@ -70,7 +70,12 @@ const handleProtectedRoute = (path, role) => {
           {/* SIGN IN */}
           {user ? (
   <div
-    onClick={() => navigate(`/dashboard/${user.role}`)}
+    onClick={() => {
+  const dest = user.role === "user"
+    ? `/dashboard/${user.mode}`
+    : `/dashboard/${user.role}`
+  navigate(dest)
+}}
     className="w-10 h-10 flex items-center justify-center 
                rounded-full bg-red-600 text-white 
                font-bold cursor-pointer hover:bg-red-700 transition"
@@ -140,7 +145,7 @@ const handleProtectedRoute = (path, role) => {
         Home
       </Link>
       
-      <Link to="/dashboard/donor/register" onClick={() => setIsOpen(false)}
+      <Link to="/dashboard/donor" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
         Donate Blood
       </Link>
@@ -150,7 +155,7 @@ const handleProtectedRoute = (path, role) => {
         Find Blood Banks
       </Link>
 
-      <Link to="/recipient" onClick={() => setIsOpen(false)}
+      <Link to="/dashboard/recipient" onClick={() => setIsOpen(false)}
         className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
         Request Blood
       </Link>

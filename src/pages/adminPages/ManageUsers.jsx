@@ -10,16 +10,10 @@ export default function ManageUsers() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState("donors")
-
-  const [donors, setDonors] = useState([])
-  const [recipients, setRecipients] = useState([])
-  const [totalDonors, setTotalDonors] = useState(0)
-  const [totalRecipients, setTotalRecipients] = useState(0)
-  const [donorPage, setDonorPage] = useState(1)
-  const [recipientPage, setRecipientPage] = useState(1)
-  const [donorTotalPages, setDonorTotalPages] = useState(1)
-  const [recipientTotalPages, setRecipientTotalPages] = useState(1)
+  const [users, setUsers] = useState([])
+const [totalUsers, setTotalUsers] = useState(0)
+const [page, setPage] = useState(1)
+const [totalPages, setTotalPages] = useState(1)
   const LIMIT = 10
 
   useEffect(() => {
@@ -31,62 +25,68 @@ export default function ManageUsers() {
     setUser(currentUser)
   }, [navigate])
 
-  useEffect(() => {
-    fetchUsers("donor", donorPage)
-  }, [donorPage])
+ useEffect(() => {
+  fetchUsers(page)
+}, [page])
 
-  useEffect(() => {
-    fetchUsers("recipient", recipientPage)
-  }, [recipientPage])
+ useEffect(() => {
+  fetchUsers(page)
+}, [page])
 
-  const fetchUsers = async (role, page) => {
-    setLoading(true)
-    try {
-      const token = localStorage.getItem("token")
-      const response = await axios.get(
-        `${BACKEND_URL}/api/admin/users?role=${role}&page=${page}&limit=${LIMIT}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      )
-      const { users, total } = response.data.data
+ const fetchUsers = async (page) => {
+  setLoading(true)
 
-      if (role === "donor") {
-        setDonors(users)
-        setTotalDonors(total)
-        setDonorTotalPages(Math.ceil(total / LIMIT))
-      } else {
-        setRecipients(users)
-        setTotalRecipients(total)
-        setRecipientTotalPages(Math.ceil(total / LIMIT))
+  try {
+    const token = localStorage.getItem("token")
+
+    const response = await axios.get(
+      `${BACKEND_URL}/api/admin/users?role=user&page=${page}&limit=${LIMIT}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
       }
-    } catch (err) {
-      console.error("Failed to fetch users:", err)
-    }
-    setLoading(false)
+    )
+
+    const { users, total } = response.data.data
+
+    setUsers(users)
+    setTotalUsers(total)
+    setTotalPages(Math.ceil(total / LIMIT))
+  } catch (err) {
+    console.error("Failed to fetch users:", err)
   }
 
-  const toggleVerification = async (id, currentStatus, role) => {
-    try {
-      const token = localStorage.getItem("token")
-      await axios.patch(
-        `${BACKEND_URL}/api/admin/users/${id}/verify`,
-        { isApproved: !currentStatus },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      )
-      if (role === "donor") {
-        setDonors(donors.map(d => d._id === id ? { ...d, isApproved: !currentStatus } : d))
-      } else {
-        setRecipients(recipients.map(r => r._id === id ? { ...r, isApproved: !currentStatus } : r))
+  setLoading(false)
+}
+
+const toggleVerification = async (id, currentStatus) => {
+  try {
+    const token = localStorage.getItem("token")
+
+    await axios.patch(
+      `${BACKEND_URL}/api/admin/users/${id}/verify`,
+      { isApproved: !currentStatus },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
       }
-    } catch (err) {
-      console.error("Failed to update verification:", err)
-    }
+    )
+
+    setUsers(
+      users.map((u) =>
+        u._id === id
+          ? { ...u, isApproved: !currentStatus }
+          : u
+      )
+    )
+  } catch (err) {
+    console.error("Failed to update verification:", err)
   }
+}
 
   const renderTable = (data, role, currentPage, totalPages, setPage, total) => (
     <>
@@ -124,7 +124,7 @@ export default function ManageUsers() {
                     </td>
                     <td className="px-6 py-4">
                       <button
-                        onClick={() => toggleVerification(u._id, u.isApproved, role)}
+                        onClick={() => toggleVerification(u._id, u.isApproved)}
                         className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
                           u.isApproved
                             ? "bg-red-600/20 text-red-400 hover:bg-red-600/30"
@@ -209,53 +209,23 @@ export default function ManageUsers() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Manage Users</h1>
-          <p className="text-gray-400">Verify and manage donor and recipient accounts</p>
+          <p className="text-gray-400">Verify and manage registered platform users</p>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-8 border-b border-zinc-800">
-          <button
-            onClick={() => setActiveTab("donors")}
-            className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "donors"
-                ? "text-red-600 border-b-2 border-red-600"
-                : "text-gray-400 hover:text-white"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <User className="w-4 h-4" />
-              Donors ({totalDonors})
-            </div>
-          </button>
-          <button
-            onClick={() => setActiveTab("recipients")}
-            className={`px-6 py-3 font-semibold transition-colors ${
-              activeTab === "recipients"
-                ? "text-red-600 border-b-2 border-red-600"
-                : "text-gray-400 hover:text-white"
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              <HeartHandshake className="w-4 h-4" />
-              Recipients ({totalRecipients})
-            </div>
-          </button>
-        </div>
+        
 
-        {activeTab === "donors" && renderTable(donors, "donor", donorPage, donorTotalPages, setDonorPage, totalDonors)}
-        {activeTab === "recipients" && renderTable(recipients, "recipient", recipientPage, recipientTotalPages, setRecipientPage, totalRecipients)}
+        {renderTable(users, "user", page, totalPages, setPage, totalUsers)}
 
         {/* Summary */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm">Total Donors</p>
-            <p className="text-3xl font-bold text-white">{totalDonors}</p>
-          </div>
-          <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
-            <p className="text-gray-400 text-sm">Total Recipients</p>
-            <p className="text-3xl font-bold text-white">{totalRecipients}</p>
-          </div>
-        </div>
+        <div className="mt-8">
+  <div className="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+    <p className="text-gray-400 text-sm">Total Users</p>
+    <p className="text-3xl font-bold text-white">
+      {totalUsers}
+    </p>
+  </div>
+</div>
       </main>
     </div>
   )

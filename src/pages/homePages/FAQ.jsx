@@ -13,40 +13,32 @@ const faqData = [
       "Enter your PIN code in the search bar, and the platform will show all registered blood banks in your area along with details like operating hours and available blood types.",
   },
   {
-    question: "Can I search for blood banks by location?",
-    answer:
-      "Yes, you can search by entering your city, district, or state. Advanced filters help you find the nearest blood banks.",
-  },
+  question: "Can I get blood bank locations on a map?",
+  answer:
+    "Yes, search for a blood bank and click on 'Find on Map' to view its exact location and directions.",
+},
   {
-    question: "How does the map-based blood bank finder work?",
-    answer:
-      "Our interactive map displays all nearby blood banks. You can zoom, click markers for details, and get navigation directions.",
-  },
+  question: "How do I register and request blood?",
+  answer:
+    "Create your account normally using Sign In/Register. After logging in, select Recipient mode and click on 'Request Blood' to submit your request.",
+},
   {
     question: "How do I register as a blood donor on the platform?",
     answer:
       "Click on 'Register as Donor', fill your details, blood group, and health info. Your profile will be added to our donor database.",
   },
+ 
   {
-    question: "How do I check real-time blood availability?",
-    answer:
-      "Go to the blood availability section, choose your required blood type, and see which nearby blood banks have stock.",
-  },
+  question: "How can I donate blood?",
+  answer:
+    "Register on the platform, choose Donor mode, and complete your profile details. Blood banks and recipients can then connect with you when needed.",
+},
+  
   {
-    question: "How can I make an urgent blood booking?",
-    answer:
-      "Use the 'Urgent Request' feature to submit your requirement. Nearby blood banks and donors will be notified immediately.",
-  },
-  {
-    question: "Is there an AI chat system to contact blood banks?",
-    answer:
-      "Yes, our AI chatbot is available 24/7 to answer queries and connect you with blood banks instantly.",
-  },
-  {
-    question: "How does the blood compatibility checker work?",
-    answer:
-      "Enter patient and donor blood types. The checker instantly informs whether the match is safe based on medical guidelines.",
-  },
+  question: "How does the blood compatibility checker work?",
+  answer:
+    "Click on a blood type to instantly see compatible donor and recipient blood groups based on medical compatibility rules.",
+},
   {
     question: "Is BloodConnect free to use?",
     answer:

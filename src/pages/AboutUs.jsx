@@ -30,11 +30,11 @@ function AboutUs() {
         "Recipients can submit blood requests with priority levels and get matched with available blood banks.",
     },
     {
-      icon: MessageSquare,
-      title: "AI Assistance",
-      description:
-        "Chat with our AI to get information about blood banks, donation guidelines, and emergency requests.",
-    },
+  icon: CheckCircle,
+  title: "Emergency Support",
+  description:
+    "Quickly access emergency blood request services with priority-based assistance and faster response coordination.",
+},
     {
       icon: Shield,
       title: "Verification System",

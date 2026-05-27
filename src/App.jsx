@@ -18,6 +18,7 @@ import Stats from "./pages/adminPages/Stats.jsx"
 import ManageBanks from "./pages/adminPages/ManageBanks.jsx"
 import ManageUsers from "./pages/adminPages/ManageUsers.jsx"
 import Settings from "./pages/adminPages/Settings.jsx"
+import UserMode from "./pages/authPages/UserMode.jsx"
 
 import Recipient from "./pages/recipientPages/Recipient.jsx";
 import MyRequests from "./pages/recipientPages/MyRequests.jsx";
@@ -30,6 +31,11 @@ import BankAssistance from "./components/BankAssistance.jsx";
 
 import DonorPage from "./pages/donorPages/DonorPage.jsx";
 import DonorRegister from "./pages/donorPages/DonorRegister.jsx";
+import DonationRequestPage from "./pages/donorPages/DonationRequestPage.jsx";
+import MyDonations from "./pages/donorPages/MyDonations.jsx"
+
+
+import { User } from "lucide-react";
 
 
 
@@ -77,6 +83,7 @@ function App() {
             <Route path="/auth/role" element={<AuthRole/>} />
             <Route path="/auth/login" element={<Login/>} />
             <Route path="/auth/register" element={<Register/>} />
+            <Route path="/auth/user-mode" element={<UserMode/>} />
 
             <Route path="/dashboard/admin" element={<Admin/>} />
             <Route path="/dashboard/admin/platform-statistics" element={<Stats/>} />
@@ -92,7 +99,8 @@ function App() {
 
             <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
             <Route path="/dashboard/donor" element={<DonorPage/>} />
-            <Route path="/dashboard/donor/register" element={<DonorRegister />} />
+            <Route path="/dashboard/donor/donation-request" element={<DonationRequestPage />} />
+            <Route path="/dashboard/donor/my-donations" element={<MyDonations />} />
 
 
             <Route path="/banks/ai-assistance" element={<BankAssistance/>} />

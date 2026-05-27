@@ -2,7 +2,6 @@ import {
   MapPin,
   Phone,
   Mail,
-  MessageSquare,
   Droplet,
   AlertCircle,
   ArrowLeft,
@@ -163,18 +162,8 @@ function FormResults({ banks }) {
        
 
         {/* Action buttons */}
-        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <button
-          onClick={() =>
-    {
-  sessionStorage.setItem("selectedBank", JSON.stringify(bank))
-  navigate("/banks/ai-assistance")
-  }
-  }
-           className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">
-            <MessageSquare className="w-4 h-4" />
-            AI Assistance
-          </button>
+        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          
           <button 
           onClick={() => navigate("/")}
            className="bg-red-600 hover:bg-red-700 text-white py-5 rounded-xl flex items-center justify-center gap-2">

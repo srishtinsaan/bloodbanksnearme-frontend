@@ -8,15 +8,23 @@ export default function Recipient() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const currentUser = getCurrentUser()
-    if (!currentUser || currentUser.role !== "recipient") {
-      navigate("/auth/role")
-      return
-    }
-    setUser(currentUser)
-    setLoading(false)
-  }, [navigate])
+ useEffect(() => {
+  const currentUser = getCurrentUser()
+  
+  // ✅ null safe check
+  if (!currentUser) {
+    navigate("/auth/role")
+    return
+  }
+  
+  if (currentUser.mode !== "recipient") {
+    navigate("/auth/user-mode")  // token hai but mode wrong — mode select karne bhejo
+    return
+  }
+  
+  setUser(currentUser)
+  setLoading(false)
+}, [navigate])
 
   const handleLogout = () => {
       logoutUser()
@@ -82,7 +90,7 @@ export default function Recipient() {
             <div className="flex items-start gap-4">
               <Droplet className="w-5 h-5 text-red-600 mt-1" />
               <div>
-                <p className="text-gray-400 text-sm">Role</p>
+                <p className="text-gray-400 text-sm">Mode</p>
                 <p className="text-white font-semibold">Blood Recipient</p>
               </div>
             </div>
@@ -98,7 +106,7 @@ export default function Recipient() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Link
             to="/"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
@@ -121,10 +129,22 @@ export default function Recipient() {
             to="/dashboard/recipient/my-requests"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
-            <Calendar className="w-8 h-8 text-red-600 mb-4" />
+            <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
             <h3 className="text-white font-bold mb-2">My Requests</h3>
             <p className="text-gray-400 text-sm">View your blood requests</p>
           </Link>
+
+          <button
+  onClick={() => {
+    localStorage.setItem("mode", "donor")
+    navigate("/dashboard/donor")
+  }}
+  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all text-left"
+>
+  <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
+  <h3 className="text-white font-bold mb-2">Donate Blood</h3>
+  <p className="text-gray-400 text-sm">Save somebody's life</p>
+</button>
         </div>
       </main>
     </div>

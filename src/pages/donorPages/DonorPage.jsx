@@ -9,14 +9,18 @@ export default function DonorPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const currentUser = getCurrentUser()
-    if (!currentUser || currentUser.role !== "donor") {
-      navigate("/auth/role")
-      return
-    }
-    setUser(currentUser)
-    setLoading(false)
-  }, [navigate])
+  const currentUser = getCurrentUser()
+  if (!currentUser) {
+    navigate("/auth/role")
+    return
+  }
+  if (currentUser.mode !== "donor") {
+    navigate("/auth/user-mode")
+    return
+  }
+  setUser(currentUser)
+  setLoading(false)
+}, [navigate])
 
   const handleLogout = () => {
     logoutUser()
@@ -54,7 +58,7 @@ export default function DonorPage() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Welcome section */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.username}! 👋</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.username}!</h1>
           <p className="text-gray-400">Manage your donation profile and help save lives</p>
         </div>
 
@@ -71,34 +75,22 @@ export default function DonorPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
-              <Mail className="w-5 h-5 text-red-600 mt-1" />
-              <div>
-                <p className="text-gray-400 text-sm">Email</p>
-                <p className="text-white font-semibold">{user?.email}</p>
-              </div>
-            </div>
+            
 
             <div className="flex items-start gap-4">
               <Droplet className="w-5 h-5 text-red-600 mt-1" />
               <div>
-                <p className="text-gray-400 text-sm">Role</p>
+                <p className="text-gray-400 text-sm">Mode</p>
                 <p className="text-white font-semibold">Blood Donor</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
-              <Calendar className="w-5 h-5 text-red-600 mt-1" />
-              <div>
-                <p className="text-gray-400 text-sm">Member Since</p>
-                <p className="text-white font-semibold">Today</p>
-              </div>
-            </div>
+            
           </div>
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Link
             to="/"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
@@ -109,7 +101,7 @@ export default function DonorPage() {
           </Link>
 
           <Link
-            to="/dashboard/donor/register"
+            to="/dashboard/donor/donation-request"
             className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
             <Calendar className="w-8 h-8 text-red-600 mb-4" />
@@ -118,13 +110,25 @@ export default function DonorPage() {
           </Link>
 
           <Link
-            to="/"
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:shadow-lg hover:shadow-red-600/20 transition-all"
+            to="/dashboard/donor/my-donations"
+            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all"
           >
             <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
             <h3 className="text-white font-bold mb-2">My Donations</h3>
             <p className="text-gray-400 text-sm">View your donation history</p>
           </Link>
+
+          <button
+  onClick={() => {
+    localStorage.setItem("mode", "recipient")
+    navigate("/dashboard/recipient")
+  }}
+  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all text-left"
+>
+  <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
+  <h3 className="text-white font-bold mb-2">Request Blood</h3>
+  <p className="text-gray-400 text-sm">Submit a blood request</p>
+</button>
         </div>
       </main>
     </div>

@@ -23,15 +23,18 @@ export default function BloodRequest() {
   const bloodTypes = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]
 
   useEffect(() => {
-    const currentUser = getCurrentUser()
-    if (!currentUser || currentUser.role !== "recipient") {
-      navigate("/auth/role")
-      return
-    }
-
-    setUser(currentUser)
-    setLoading(false)
-  }, [navigate])
+  const currentUser = getCurrentUser()
+  if (!currentUser) {
+    navigate("/auth/role")
+    return
+  }
+  if (currentUser.mode !== "recipient") {
+    navigate("/auth/user-mode")
+    return
+  }
+  setUser(currentUser)
+  setLoading(false)
+}, [navigate])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
