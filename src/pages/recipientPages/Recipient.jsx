@@ -54,7 +54,7 @@ export default function Recipient() {
       <main className="max-w-6xl mx-auto px-4 py-12">
         {/* Welcome section */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.username}! 👋</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.username}!</h1>
           <p className="text-gray-400">Find blood banks and request blood when needed</p>
         </div>
 
@@ -71,13 +71,13 @@ export default function Recipient() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
+            {/* <div className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-red-600 mt-1" />
               <div>
                 <p className="text-gray-400 text-sm">Email</p>
                 <p className="text-white font-semibold">{user?.email}</p>
               </div>
-            </div>
+            </div> */}
 
             <div className="flex items-start gap-4">
               <Droplet className="w-5 h-5 text-red-600 mt-1" />
@@ -87,13 +87,13 @@ export default function Recipient() {
               </div>
             </div>
 
-            <div className="flex items-start gap-4">
+            {/* <div className="flex items-start gap-4">
               <Calendar className="w-5 h-5 text-red-600 mt-1" />
               <div>
                 <p className="text-gray-400 text-sm">Member Since</p>
                 <p className="text-white font-semibold">Today</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

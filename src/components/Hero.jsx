@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 
 export default function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
-  const titles = ["Verified donors", "AI assistance", "Quick response", "24/7 support"];
+  const titles = ["Verified donors", "Quick response", "24/7 support"];
 
   // Animate titles
   useEffect(() => {

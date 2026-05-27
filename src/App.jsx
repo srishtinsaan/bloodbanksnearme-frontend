@@ -22,6 +22,8 @@ import Settings from "./pages/adminPages/Settings.jsx"
 import Recipient from "./pages/recipientPages/Recipient.jsx";
 import MyRequests from "./pages/recipientPages/MyRequests.jsx";
 import BloodRequest from "./pages/recipientPages/BloodRequest.jsx"
+import CancellationRequest from "./pages/recipientPages/CancellationRequest.jsx";
+import RequestPage from "./pages/recipientPages/RequestPage.jsx";
 
 import Bloodbank from "./pages/Bloodbank.jsx"
 import BankAssistance from "./components/BankAssistance.jsx";
@@ -85,6 +87,8 @@ function App() {
             <Route path="/dashboard/recipient" element={<Recipient/>} />
             <Route path="/dashboard/recipient/my-requests" element={<MyRequests/>} />
             <Route path="/dashboard/recipient/blood-request" element={<BloodRequest/>} />
+            <Route path="/dashboard/recipient/cancel-request/:id" element={<CancellationRequest/>} />
+            <Route path="/dashboard/recipient/request/:id" element={<RequestPage />}/>
 
             <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
             <Route path="/dashboard/donor" element={<DonorPage/>} />

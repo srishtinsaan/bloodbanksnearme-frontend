@@ -73,7 +73,7 @@ export default function BloodRequest() {
     })
 
     setTimeout(() => {
-      navigate("/recipient/my-requests")
+      navigate("/dashboard/recipient/my-requests")
     }, 2000)
   }
 
