@@ -69,17 +69,24 @@ const handleLogout = () => {
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
 
-          {role !== "admin" || role !== "bank" && (
+        {role !== "admin" && role !== "bank" && (
   <>
     <button
-      onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
+      onClick={() =>
+        handleProtectedRoute("/dashboard/donor/register", "donor")
+      }
       className="font-semibold hover:text-white/90"
     >
       Donate Blood
     </button>
 
     <button
-      onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
+      onClick={() =>
+        handleProtectedRoute(
+          "/dashboard/recipient/blood-request",
+          "recipient"
+        )
+      }
       className="font-semibold hover:text-white/90"
     >
       Request Blood
