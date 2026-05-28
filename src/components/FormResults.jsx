@@ -25,28 +25,30 @@ function FormResults({ banks }) {
     return !value || value === "NA" || value === "N/A";
   };
 
-  const handleRequestBlood = () => {
-    if (!currentUser) {
-      // not logged in — login pe bhejo
-      localStorage.setItem("selected_role", "user")
-      navigate("/auth/login?role=user")
-      return
-    }
-    // mode set karo recipient aur navigate karo
-    localStorage.setItem("mode", "recipient")
-    navigate("/dashboard/recipient/blood-request")
+ const handleRequestBlood = (bank) => {
+  if (!currentUser) {
+    localStorage.setItem("selected_role", "user")
+    navigate("/auth/login?role=user")
+    return
   }
+  localStorage.setItem("mode", "recipient")
+  navigate(
+    `/dashboard/recipient/blood-request?bankName=${encodeURIComponent(bank[" Blood Bank Name"])}&pincode=${bank["Pincode"]}&targeted=true`
+  )
+}
+const handleScheduleDonation = (bank) => {
+  if (!currentUser) {
+    localStorage.setItem("selected_role", "user")
+    navigate("/auth/login?role=user")
+    return
+  }
+  localStorage.setItem("mode", "donor")
+  navigate(
+    `/dashboard/donor/donation-request?bankName=${encodeURIComponent(bank[" Blood Bank Name"])}&pincode=${bank[" Pincode"] || bank["Pincode"] || ""}&targeted=true`
+  )
+}
 
-  const handleScheduleDonation = () => {
-    if (!currentUser) {
-      localStorage.setItem("selected_role", "user")
-      navigate("/auth/login?role=user")
-      return
-    }
-    // mode set karo donor aur navigate karo
-    localStorage.setItem("mode", "donor")
-    navigate("/dashboard/donor/donation-request")
-  }
+  
 
   // admin ya bloodbank ke liye action buttons hide karo
   const isAdminOrBank = currentUser?.role === "admin" || currentUser?.role === "bloodbank"
@@ -208,7 +210,7 @@ function FormResults({ banks }) {
             {/* Request Blood — hide for admin/bloodbank */}
             {!isAdminOrBank && (
               <button
-                onClick={handleRequestBlood}
+                onClick={() => handleRequestBlood(bank)}
                 className="group bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white py-4 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
               >
                 <Droplet className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
@@ -219,7 +221,7 @@ function FormResults({ banks }) {
             {/* Schedule Donation — hide for admin/bloodbank */}
             {!isAdminOrBank && (
               <button
-                onClick={handleScheduleDonation}
+                onClick={() => handleScheduleDonation(bank)}
                 className="group bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white py-4 px-5 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
               >
                 <Calendar className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />

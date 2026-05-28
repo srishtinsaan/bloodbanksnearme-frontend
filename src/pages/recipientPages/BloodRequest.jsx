@@ -2,6 +2,8 @@ import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { getCurrentUser } from "../../utils/admin_helper"
 import { HeartHandshake, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react"
+import { createBloodRequest } from "../../utils/helper.js"
+
 
 export default function BloodRequest() {
   const navigate = useNavigate()
@@ -9,15 +11,24 @@ export default function BloodRequest() {
   const [loading, setLoading] = useState(true)
   const [formSubmitted, setFormSubmitted] = useState(false)
 
+  const params = new URLSearchParams(location.search)
+const bankName = params.get("bankName") || ""
+const reqlocation = params.get("location") || ""
+const pincode = params.get("pincode") || ""
+const isTargeted = params.get("targeted") === "true"
+
   const [formData, setFormData] = useState({
     bloodType: "O+",
     units: 1,
     urgency: "routine",
     reason: "",
-    location: "",
-    pincode: "",
+    location: bankName ? `${reqlocation}` : "",
+    pincode: pincode || "", 
     phoneNumber: "",
     notes: "",
+    targetBankName: bankName || null,
+    targetBankPincode: pincode || null,
+    isTargeted: isTargeted
   })
 
   const bloodTypes = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]
@@ -44,41 +55,17 @@ export default function BloodRequest() {
     }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    const existingRequests = JSON.parse(
-      localStorage.getItem("blood_requests") || "[]"
-    )
-
-    const newRequest = {
-      id: `req_${Date.now()}`,
-      ...formData,
-      units: Number(formData.units),
-      createdAt: new Date().toISOString(),
-      status: "pending",
-    }
-
-    existingRequests.push(newRequest)
-    localStorage.setItem("blood_requests", JSON.stringify(existingRequests))
-
+  const handleSubmit = async (e) => {
+  e.preventDefault()
+  try {
+    await createBloodRequest({ ...formData, units: Number(formData.units) })
     setFormSubmitted(true)
-
-    setFormData({
-      bloodType: "O+",
-      units: 1,
-      urgency: "routine",
-      reason: "",
-      location: "",
-      pincode: "",
-      phoneNumber: "",
-      notes: "",
-    })
-
-    setTimeout(() => {
-      navigate("/dashboard/recipient/my-requests")
-    }, 2000)
+    setFormData({ bloodType: "O+", units: 1, urgency: "routine", reason: "", location: "", pincode: "", phoneNumber: "", notes: "" })
+    setTimeout(() => navigate("/dashboard/recipient/my-requests"), 2000)
+  } catch (err) {
+    alert(err.message)
   }
+}
 
   if (loading) {
     return (
@@ -114,13 +101,16 @@ export default function BloodRequest() {
       {/* Main */}
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Request Blood
-          </h1>
-          <p className="text-gray-400">
-            Submit a blood request to nearby blood banks
-          </p>
-        </div>
+  <h1 className="text-4xl font-bold text-white mb-2">
+    Request Blood
+  </h1>
+  <p className="text-gray-400">
+    {bankName
+      ? `Requesting from ${bankName}`
+      : "Submit a blood request to nearby blood banks"
+    }
+  </p>
+</div>
 
         {formSubmitted && (
           <div className="mb-8 bg-green-600/20 border border-green-600 rounded-2xl p-6 flex items-start gap-4">

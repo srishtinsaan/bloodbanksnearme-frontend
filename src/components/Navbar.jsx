@@ -8,6 +8,7 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const role = user?.role;
 
   useEffect(() => {
   const checkUser = () => {
@@ -68,19 +69,23 @@ const handleLogout = () => {
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
 
-          <button
-            onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
-            className="font-semibold hover:text-white/90"
-          >
-            Donate Blood
-          </button>
+          {role !== "admin" || role !== "bank" && (
+  <>
+    <button
+      onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
+      className="font-semibold hover:text-white/90"
+    >
+      Donate Blood
+    </button>
 
-          <button
-            onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
-            className="font-semibold hover:text-white/90"
-          >
-            Request Blood
-          </button>
+    <button
+      onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
+      className="font-semibold hover:text-white/90"
+    >
+      Request Blood
+    </button>
+  </>
+)}
 
           <button
             onClick={() => navigate("/about-us")}
@@ -107,12 +112,7 @@ const handleLogout = () => {
                 {user?.username?.charAt(0).toUpperCase()}
               </div>
 
-              <button
-                onClick={handleLogout}
-                className="text-sm text-red-400 hover:text-red-300"
-              >
-                Logout
-              </button>
+              
             </div>
           ) : (
             <button
@@ -166,8 +166,17 @@ const handleLogout = () => {
           >
 
             <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
-            <Link to="/dashboard/donor" onClick={() => setIsOpen(false)}>Donate Blood</Link>
-            <Link to="/dashboard/recipient" onClick={() => setIsOpen(false)}>Request Blood</Link>
+            {role !== "admin" && (
+  <>
+    <Link to="/dashboard/donor" onClick={() => setIsOpen(false)}>
+      Donate Blood
+    </Link>
+
+    <Link to="/dashboard/recipient" onClick={() => setIsOpen(false)}>
+      Request Blood
+    </Link>
+  </>
+)}
             <Link to="/about-us" onClick={() => setIsOpen(false)}>About Us</Link>
 
             <div className="border-t border-zinc-800 mt-3 pt-3">

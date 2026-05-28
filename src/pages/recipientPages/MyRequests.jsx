@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { getCurrentUser } from "../../utils/admin_helper"
+import { getMyBloodRequests } from "../../utils/helper.js"
+
 import {
   HeartHandshake,
   ArrowLeft,
@@ -18,20 +20,29 @@ export default function MyRequests() {
   const [filter, setFilter] = useState("all")
 
  useEffect(() => {
-  const currentUser = getCurrentUser()
-  if (!currentUser) {
-    navigate("/auth/role")
-    return
+  const fetchData = async () => {
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      navigate("/auth/role")
+      return
+    }
+    if (currentUser.mode !== "recipient") {
+      navigate("/auth/user-mode")
+      return
+    }
+    setUser(currentUser)
+
+    try {
+      const res = await getMyBloodRequests()
+      setRequests(res.data)
+    } catch (err) {
+      console.error("Failed to fetch requests:", err)
+    }
+
+    setLoading(false)
   }
-  if (currentUser.mode !== "recipient") {
-    navigate("/auth/user-mode")
-    return
-  }
-  setUser(currentUser)
-  const stored = JSON.parse(localStorage.getItem("blood_requests") || "[]")
-  setRequests(stored)
-  
-  setLoading(false)
+
+  fetchData()
 }, [navigate])
 
   const filteredRequests = requests.filter((req) => {
@@ -165,7 +176,7 @@ export default function MyRequests() {
           <div className="grid grid-cols-1 gap-4">
             {filteredRequests.map((request) => (
               <div
-                key={request.id}
+                key={request._id}
                 className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:border-zinc-700/60 transition-colors"
               >
                 {/* Text Content */}
@@ -191,7 +202,7 @@ export default function MyRequests() {
                 {/* Clean Actions Layout */}
                 <div className="flex gap-3 items-center">
                   <Link
-                    to={`/dashboard/recipient/request/${request.id}`}
+                    to={`/dashboard/recipient/request/${request._id}`}
                     className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors border border-zinc-700/50"
                   >
                     View Request
@@ -200,7 +211,7 @@ export default function MyRequests() {
                   {request.status === "pending" && (
                     <button
                       onClick={() =>
-                        navigate(`/dashboard/recipient/cancel-request/${request.id}`)
+                        navigate(`/dashboard/recipient/cancel-request/${request._id}`)
                       }
                       className="bg-zinc-950 hover:bg-rose-950/30 text-zinc-400 hover:text-rose-400 px-4 py-2 rounded-lg text-sm font-medium transition-all border border-zinc-800 hover:border-rose-900/30"
                     >

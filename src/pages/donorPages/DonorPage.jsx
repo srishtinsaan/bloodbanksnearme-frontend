@@ -1,30 +1,48 @@
 import React, { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { getCurrentUser, logoutUser } from "../../utils/admin_helper.js" // adjust path
-import { HeartHandshake, LogOut, Calendar, Droplet, Mail } from "lucide-react"
+import { getCurrentUser, logoutUser } from "../../utils/admin_helper.js"
+import { HeartHandshake, LogOut, Calendar, Droplet } from "lucide-react"
+import { switchMode } from "../../utils/helper.js"
 
 export default function DonorPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [switchingMode, setSwitchingMode] = useState(false)
+  const [error, setError] = useState("")
 
   useEffect(() => {
-  const currentUser = getCurrentUser()
-  if (!currentUser) {
-    navigate("/auth/role")
-    return
-  }
-  if (currentUser.mode !== "donor") {
-    navigate("/auth/user-mode")
-    return
-  }
-  setUser(currentUser)
-  setLoading(false)
-}, [navigate])
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      navigate("/auth/role")
+      return
+    }
+    if (currentUser.mode !== "donor") {
+      navigate("/auth/user-mode")
+      return
+    }
+    setUser(currentUser)
+    setLoading(false)
+  }, [navigate])
 
   const handleLogout = () => {
     logoutUser()
     navigate("/")
+  }
+
+  const handleSwitchToRecipient = async () => {
+    setSwitchingMode(true)
+    setError("")
+    try {
+      const res = await switchMode("recipient")
+      const updatedUser = res.data.user
+      localStorage.setItem("user", JSON.stringify(updatedUser))
+      navigate("/dashboard/recipient")
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setSwitchingMode(false)
+    }
   }
 
   if (loading) {
@@ -40,7 +58,7 @@ export default function DonorPage() {
       {/* Header */}
       <header className="bg-black border-b border-zinc-800">
         <div className="max-w-6xl mx-auto px-4 py-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-white  transition-colors">
+          <Link to="/" className="flex items-center gap-2 text-white transition-colors">
             <HeartHandshake className="w-6 h-6 text-red-600" />
             <span className="text-2xl font-bold">BloodConnect</span>
           </Link>
@@ -56,11 +74,18 @@ export default function DonorPage() {
 
       {/* Main content */}
       <main className="max-w-6xl mx-auto px-4 py-12">
+
         {/* Welcome section */}
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-white mb-2">Welcome, {user?.username}!</h1>
           <p className="text-gray-400">Manage your donation profile and help save lives</p>
         </div>
+
+        {error && (
+          <div className="mb-6 bg-red-600/20 border border-red-600 rounded-xl p-4">
+            <p className="text-red-200 text-sm">{error}</p>
+          </div>
+        )}
 
         {/* Profile card */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 mb-8">
@@ -75,8 +100,6 @@ export default function DonorPage() {
               </div>
             </div>
 
-            
-
             <div className="flex items-start gap-4">
               <Droplet className="w-5 h-5 text-red-600 mt-1" />
               <div>
@@ -84,8 +107,6 @@ export default function DonorPage() {
                 <p className="text-white font-semibold">Blood Donor</p>
               </div>
             </div>
-
-            
           </div>
         </div>
 
@@ -119,17 +140,18 @@ export default function DonorPage() {
           </Link>
 
           <button
-  onClick={() => {
-    localStorage.setItem("mode", "recipient")
-    navigate("/dashboard/recipient")
-  }}
-  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 transition-all text-left"
->
-  <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
-  <h3 className="text-white font-bold mb-2">Request Blood</h3>
-  <p className="text-gray-400 text-sm">Submit a blood request</p>
-</button>
+            onClick={handleSwitchToRecipient}
+            disabled={switchingMode}
+            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 hover:shadow-lg hover:shadow-red-600/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-left"
+          >
+            <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
+            <h3 className="text-white font-bold mb-2">
+              {switchingMode ? "Switching..." : "Request Blood"}
+            </h3>
+            <p className="text-gray-400 text-sm">Submit a blood request</p>
+          </button>
         </div>
+
       </main>
     </div>
   )

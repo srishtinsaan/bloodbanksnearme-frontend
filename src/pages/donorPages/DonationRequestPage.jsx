@@ -2,86 +2,89 @@ import { useEffect, useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { getCurrentUser } from "../../utils/admin_helper"
 import { HeartHandshake, ArrowLeft, AlertCircle, CheckCircle } from "lucide-react"
+import { createDonationRequest } from "../../utils/helper.js"
 
 export default function DonationRequestPage() {
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [formSubmitted, setFormSubmitted] = useState(false)
+  const [error, setError] = useState("")
+  const [submitting, setSubmitting] = useState(false)
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    age: "",
-    gender: "",
     bloodGroup: "",
-    phoneNumber: "",
-    email: "",
-    city: "",
+    units: "",
+    availability: "",
+    location: "",
     pincode: "",
-    lastDonationDate: "",
-    medicalConditions: "",
+    phoneNumber: "",
     notes: "",
   })
 
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"]
 
   useEffect(() => {
-    const currentUser = getCurrentUser()
-    if (!currentUser) {
+  const checkUser = async () => {
+    try {
+      const currentUser = getCurrentUser()
+
+      if (!currentUser) {
+        navigate("/auth/role")
+        return
+      }
+
+      if (currentUser.mode !== "donor") {
+        navigate("/auth/user-mode")
+        return
+      }
+
+      setUser(currentUser)
+    } catch (err) {
+      console.error(err)
       navigate("/auth/role")
-      return
+    } finally {
+      setLoading(false)
     }
-    if (currentUser.mode !== "donor") {
-      navigate("/auth/user-mode")
-      return
-    }
-    setUser(currentUser)
-    setLoading(false)
-  }, [navigate])
+  }
+
+  checkUser()
+}, [navigate])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const handleSubmit = async (e) => {
+  e.preventDefault()
+  setError("")
+  setSubmitting(true)
 
-    const existingDonations = JSON.parse(
-      localStorage.getItem("donation_requests") || "[]"
-    )
-
-    const newDonation = {
-      id: `don_${Date.now()}`,
-      ...formData,
-      age: Number(formData.age),
-      createdAt: new Date().toISOString(),
-      status: "pending",
-    }
-
-    existingDonations.push(newDonation)
-    localStorage.setItem("donation_requests", JSON.stringify(existingDonations))
+  try {
+    await createDonationRequest({ ...formData, units: Number(formData.units) })
 
     setFormSubmitted(true)
-
     setFormData({
-      fullName: "",
-      age: "",
-      gender: "",
       bloodGroup: "",
-      phoneNumber: "",
-      email: "",
-      city: "",
+      units: "",
+      availability: "",
+      location: "",
       pincode: "",
-      lastDonationDate: "",
-      medicalConditions: "",
+      phoneNumber: "",
       notes: "",
     })
 
     setTimeout(() => {
       navigate("/dashboard/donor")
     }, 2000)
+
+  } catch (err) {
+    setError(err.message || "Something went wrong. Please try again.")
+  } finally {
+    setSubmitting(false)
   }
+}
 
   if (loading) {
     return (
@@ -110,72 +113,33 @@ export default function DonationRequestPage() {
         </div>
       </header>
 
-      {/* Main */}
-      
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">Register as Donor</h1>
-          <p className="text-gray-400">Fill in your details to register as a blood donor</p>
+          <h1 className="text-4xl font-bold text-white mb-2">Submit Donation Request</h1>
+          <p className="text-gray-400">Let blood banks know you're available to donate</p>
         </div>
 
         {formSubmitted && (
           <div className="mb-8 bg-green-600/20 border border-green-600 rounded-2xl p-6 flex items-start gap-4">
             <CheckCircle className="w-6 h-6 text-green-500 mt-0.5" />
             <div>
-              <h3 className="text-white font-bold mb-1">Registration Submitted!</h3>
+              <h3 className="text-white font-bold mb-1">Donation Request Submitted!</h3>
               <p className="text-green-200 text-sm">
-                Thank you for registering. Blood banks in your area will reach out to you.
+                Your request has been received. An admin will review and confirm it shortly.
               </p>
             </div>
           </div>
         )}
 
+        {error && (
+          <div className="mb-8 bg-red-600/20 border border-red-600 rounded-2xl p-6 flex items-start gap-4">
+            <AlertCircle className="w-6 h-6 text-red-500 mt-0.5" />
+            <p className="text-red-200 text-sm">{error}</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-
-            <div>
-              <label className="block text-white font-semibold mb-3">Full Name</label>
-              <input
-                type="text"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleInputChange}
-                required
-                placeholder="Enter your full name"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white font-semibold mb-3">Age</label>
-              <input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={handleInputChange}
-                min="18"
-                max="65"
-                required
-                placeholder="Must be 18-65"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white font-semibold mb-3">Gender</label>
-              <select
-                name="gender"
-                value={formData.gender}
-                onChange={handleInputChange}
-                required
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3"
-              >
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
 
             <div>
               <label className="block text-white font-semibold mb-3">Blood Group</label>
@@ -194,6 +158,37 @@ export default function DonationRequestPage() {
             </div>
 
             <div>
+              <label className="block text-white font-semibold mb-3">Units Available to Donate</label>
+              <input
+                type="number"
+                name="units"
+                value={formData.units}
+                onChange={handleInputChange}
+                min="1"
+                max="10"
+                required
+                placeholder="1 - 10"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
+              />
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-3">Availability</label>
+              <select
+                name="availability"
+                value={formData.availability}
+                onChange={handleInputChange}
+                required
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3"
+              >
+                <option value="">Select availability</option>
+                <option value="immediate">Immediate</option>
+                <option value="within_week">Within a Week</option>
+                <option value="within_month">Within a Month</option>
+              </select>
+            </div>
+
+            <div>
               <label className="block text-white font-semibold mb-3">Phone Number</label>
               <input
                 type="tel"
@@ -207,27 +202,14 @@ export default function DonationRequestPage() {
             </div>
 
             <div>
-              <label className="block text-white font-semibold mb-3">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                placeholder="your@email.com"
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
-              />
-            </div>
-
-            <div>
-              <label className="block text-white font-semibold mb-3">City</label>
+              <label className="block text-white font-semibold mb-3">Location</label>
               <input
                 type="text"
-                name="city"
-                value={formData.city}
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
                 required
-                placeholder="Your city"
+                placeholder="e.g. Koramangala, Bangalore"
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
               />
             </div>
@@ -246,77 +228,44 @@ export default function DonationRequestPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-white font-semibold mb-3">Last Donation Date (if any)</label>
-              <input
-                type="date"
-                name="lastDonationDate"
-                value={formData.lastDonationDate}
+              <label className="block text-white font-semibold mb-3">Additional Notes</label>
+              <textarea
+                name="notes"
+                value={formData.notes}
                 onChange={handleInputChange}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3"
+                rows={4}
+                placeholder="Any other information you'd like to share"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 resize-none placeholder-gray-600"
               />
             </div>
-          </div>
 
-          <div className="mb-6">
-            <label className="block text-white font-semibold mb-3">Medical Conditions (if any)</label>
-            <input
-              type="text"
-              name="medicalConditions"
-              value={formData.medicalConditions}
-              onChange={handleInputChange}
-              placeholder="e.g. diabetes, hypertension — leave blank if none"
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 placeholder-gray-600"
-            />
-          </div>
-
-          <div className="mb-8">
-            <label className="block text-white font-semibold mb-3">Additional Notes</label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleInputChange}
-              rows={4}
-              placeholder="Any other information you'd like to share"
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg text-white px-4 py-3 resize-none placeholder-gray-600"
-            />
           </div>
 
           <div className="mb-8 bg-blue-600/20 border border-blue-600 rounded-2xl p-4 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-blue-400 mt-0.5" />
             <p className="text-blue-200 text-sm">
-              Your details will be shared with verified blood banks in your area. You may be contacted when your blood group is needed.
+              Your request will be reviewed by an admin. Once confirmed, blood banks in your area will be able to contact you.
             </p>
           </div>
+
           <div className="flex flex-col sm:flex-row gap-4">
-  
-  <button
-    type="submit"
-    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all duration-300"
-  >
-    Register as Donor
-  </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="flex-1 bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-all duration-300"
+            >
+              {submitting ? "Submitting..." : "Submit Donation Request"}
+            </button>
 
-  <button
-    type="button"
-    onClick={() => navigate("/dashboard/donor/my-donations")}
-    className="
-      flex-1
-      bg-zinc-800
-      hover:bg-zinc-700
-      border border-zinc-700
-      text-white
-      font-semibold
-      py-3
-      rounded-xl
-      transition-all duration-300
-    "
-  >
-    Already Registered? View Details
-  </button>
+            <button
+              type="button"
+              onClick={() => navigate("/dashboard/donor/my-donations")}
+              className="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-semibold py-3 rounded-xl transition-all duration-300"
+            >
+              View My Donations
+            </button>
+          </div>
 
-</div>
-
-          
         </form>
       </main>
     </div>

@@ -108,6 +108,35 @@ export default function Admin() {
               Settings
             </div>
           </Link>
+
+          <Link
+  to="/dashboard/admin/donation-requests"
+  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 transition-colors"
+>
+  <HeartHandshake className="w-8 h-8 text-red-600 mb-4" />
+  <h3 className="text-white font-bold mb-2">Donation Requests</h3>
+  <p className="text-gray-400 text-sm mb-4">
+    View and manage all blood donation requests from donors
+  </p>
+  <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-block">
+    View Requests
+  </div>
+</Link>
+
+
+<Link
+  to="/dashboard/admin/blood-requests"
+  className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-red-600 transition-colors"
+>
+  <Users className="w-8 h-8 text-red-600 mb-4" />
+  <h3 className="text-white font-bold mb-2">Blood Requests</h3>
+  <p className="text-gray-400 text-sm mb-4">
+    Track and manage blood requests from recipients
+  </p>
+  <div className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg inline-block">
+    View Requests
+  </div>
+</Link>
         </div>
       </main>
     </div>

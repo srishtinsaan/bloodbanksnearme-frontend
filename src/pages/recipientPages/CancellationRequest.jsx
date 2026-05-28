@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams, Link } from "react-router-dom"
+import { getMyBloodRequests, requestCancellation } from "../../utils/helper.js"
+
+
 import {
   HeartHandshake,
   ArrowLeft,
@@ -17,55 +20,50 @@ export default function CancellationRequest() {
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    const requests = JSON.parse(
-      localStorage.getItem("blood_requests") || "[]"
-    )
-
-    const foundRequest = requests.find((req) => req.id === id)
-
-    if (!foundRequest) {
-      navigate("/dashboard/recipient/my-requests")
+  const fetchData = async () => {
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      navigate("/auth/role")
       return
     }
 
-    setRequest(foundRequest)
+    try {
+      const res = await getMyBloodRequests()
+      const foundRequest = res.data.find((req) => req._id === id)
+
+      if (!foundRequest) {
+        navigate("/dashboard/recipient/my-requests")
+        return
+      }
+
+      setRequest(foundRequest)
+    } catch (err) {
+      console.error("Failed to fetch request:", err)
+      navigate("/dashboard/recipient/my-requests")
+    }
+
     setLoading(false)
-  }, [id, navigate])
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-
-    if (!reason.trim()) {
-      alert("Please provide a cancellation reason.")
-      return
-    }
-
-    const requests = JSON.parse(
-      localStorage.getItem("blood_requests") || "[]"
-    )
-
-    const updatedRequests = requests.map((req) =>
-      req.id === id
-        ? {
-            ...req,
-            status: "cancellation_requested",
-            cancellationReason: reason,
-            cancellationRequestedAt: new Date().toISOString(),
-          }
-        : req
-    )
-
-    localStorage.setItem(
-      "blood_requests",
-      JSON.stringify(updatedRequests)
-    )
-
-    setSubmitted(true)
-
-    setTimeout(() => {
-      navigate("/dashboard/recipient/my-requests")
-    }, 2000)
   }
+
+  fetchData()
+}, [id, navigate])
+
+  const handleSubmit = async (e) => {
+  e.preventDefault()
+
+  if (!reason.trim()) {
+    alert("Please provide a cancellation reason.")
+    return
+  }
+
+  try {
+    await requestCancellation(id, reason)
+    setSubmitted(true)
+    setTimeout(() => navigate("/dashboard/recipient/my-requests"), 2000)
+  } catch (err) {
+    alert(err.message || "Something went wrong")
+  }
+}
 
   if (loading) {
     return (

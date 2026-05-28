@@ -7,6 +7,8 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react"
+import { getMyBloodRequests } from "../../utils/helper.js"
+import { getCurrentUser } from "../../utils/admin_helper"
 
 export default function RequestPage() {
   const { id } = useParams()
@@ -15,21 +17,35 @@ export default function RequestPage() {
   const [request, setRequest] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    const requests = JSON.parse(
-      localStorage.getItem("blood_requests") || "[]"
-    )
-
-    const foundRequest = requests.find((req) => req.id === id)
-
-    if (!foundRequest) {
-      navigate("/dashboard/recipient/my-requests")
+  
+useEffect(() => {
+  const fetchData = async () => {
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      navigate("/auth/role")
       return
     }
 
-    setRequest(foundRequest)
+    try {
+      const res = await getMyBloodRequests()
+      const foundRequest = res.data.find((req) => req._id === id)
+
+      if (!foundRequest) {
+        navigate("/dashboard/recipient/my-requests")
+        return
+      }
+
+      setRequest(foundRequest)
+    } catch (err) {
+      console.error("Failed to fetch request:", err)
+      navigate("/dashboard/recipient/my-requests")
+    }
+
     setLoading(false)
-  }, [id, navigate])
+  }
+
+  fetchData()
+}, [id, navigate])
 
   const getStatusColor = (status) => {
     switch (status) {

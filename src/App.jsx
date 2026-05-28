@@ -19,6 +19,9 @@ import ManageBanks from "./pages/adminPages/ManageBanks.jsx"
 import ManageUsers from "./pages/adminPages/ManageUsers.jsx"
 import Settings from "./pages/adminPages/Settings.jsx"
 import UserMode from "./pages/authPages/UserMode.jsx"
+import AdminDonationRequests from "./pages/adminPages/AdminDonationRequests.jsx"
+import AdminBloodRequests from "./pages/adminPages/AdminBloodRequests.jsx"
+
 
 import Recipient from "./pages/recipientPages/Recipient.jsx";
 import MyRequests from "./pages/recipientPages/MyRequests.jsx";
@@ -26,8 +29,8 @@ import BloodRequest from "./pages/recipientPages/BloodRequest.jsx"
 import CancellationRequest from "./pages/recipientPages/CancellationRequest.jsx";
 import RequestPage from "./pages/recipientPages/RequestPage.jsx";
 
-import Bloodbank from "./pages/Bloodbank.jsx"
-import BankAssistance from "./components/BankAssistance.jsx";
+import Bloodbank from "./pages/bankPages/Bloodbank.jsx"
+import ViewRequests from "./pages/bankPages/ViewRequests.jsx"
 
 import DonorPage from "./pages/donorPages/DonorPage.jsx";
 import DonorRegister from "./pages/donorPages/DonorRegister.jsx";
@@ -90,6 +93,8 @@ function App() {
             <Route path="/dashboard/admin/manage-banks" element={<ManageBanks/>} />
             <Route path="/dashboard/admin/manage-users" element={<ManageUsers/>} />
             <Route path="/dashboard/admin/system-settings" element={<Settings/>} />
+            <Route path="/dashboard/admin/donation-requests" element={<AdminDonationRequests/>} />
+            <Route path="/dashboard/admin/blood-requests" element={<AdminBloodRequests/>} />
 
             <Route path="/dashboard/recipient" element={<Recipient/>} />
             <Route path="/dashboard/recipient/my-requests" element={<MyRequests/>} />
@@ -98,12 +103,14 @@ function App() {
             <Route path="/dashboard/recipient/request/:id" element={<RequestPage />}/>
 
             <Route path="/dashboard/bloodbank" element={<Bloodbank/>} />
+            <Route path="/dashboard/bloodbank/requests" element={<ViewRequests/>} />
+
+
             <Route path="/dashboard/donor" element={<DonorPage/>} />
             <Route path="/dashboard/donor/donation-request" element={<DonationRequestPage />} />
             <Route path="/dashboard/donor/my-donations" element={<MyDonations />} />
 
 
-            <Route path="/banks/ai-assistance" element={<BankAssistance/>} />
 
             
 
