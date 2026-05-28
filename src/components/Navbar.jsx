@@ -1,111 +1,138 @@
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {HeartHandshake} from "lucide-react"
-import { Link, useNavigate } from "react-router-dom"
-
-import { getCurrentUser } from "../utils/admin_helper.js"
-
+import { HeartHandshake } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { getCurrentUser } from "../utils/admin_helper.js";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  const [user, setUser] = useState(null);
-
-useEffect(() => {
+  useEffect(() => {
   const checkUser = () => {
-    setUser(getCurrentUser());
+    const u = getCurrentUser();
+    setUser(u);
   };
 
   checkUser();
-  window.addEventListener("storage", checkUser);
 
-  return () => window.removeEventListener("storage", checkUser);
+  window.addEventListener("storage", checkUser);
+  window.addEventListener("auth-change", checkUser);
+
+  return () => {
+    window.removeEventListener("storage", checkUser);
+    window.removeEventListener("auth-change", checkUser);
+  };
 }, []);
 
-const handleProtectedRoute = (path, role) => {
-  const currentUser = getCurrentUser()
-  if (currentUser) {
-    navigate(path)
-  } else {
-    navigate(`/auth/login?role=${role}`)
-  }
-  setIsOpen(false)
-}
+const handleLogout = () => {
+
+
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("role");
+  localStorage.removeItem("username");
+  localStorage.removeItem("mode");
+  setUser(null);
+  setIsOpen(false);
+
+  window.dispatchEvent(new Event("auth-change"));
+
+  navigate("/");
+};
+
+  const handleProtectedRoute = (path, role) => {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      navigate(path);
+    } else {
+      navigate(`/auth/login?role=${role}`);
+    }
+    setIsOpen(false);
+  };
+
+ 
 
   return (
     <nav className="w-full lg:fixed bg-black border-b border-white/20 z-50 shadow-md relative">
       <div className="flex justify-between items-center px-4 sm:px-6 md:px-10 py-3 lg:py-1">
+
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-  <HeartHandshake className="h-12 w-12 sm:h-14 sm:w-14 text-red-500" />
-  <div className="flex flex-col leading-none">
-    <h1 className="font-bold text-lg sm:text-xl">BloodConnect</h1>
-  </div>
-</Link>
+          <HeartHandshake className="h-12 w-12 sm:h-14 sm:w-14 text-red-500" />
+          <div className="flex flex-col leading-none">
+            <h1 className="font-bold text-lg sm:text-xl">BloodConnect</h1>
+          </div>
+        </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-8 text-sm sm:text-base font-medium">
+
           <button
-  onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
-  className="font-semibold hover:text-white/90"
->
-  Donate Blood
-</button>
+            onClick={() => handleProtectedRoute("/dashboard/donor/register", "donor")}
+            className="font-semibold hover:text-white/90"
+          >
+            Donate Blood
+          </button>
 
-<button
-  onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
-  className="font-semibold hover:text-white/90"
->
-  Request Blood
-</button>
+          <button
+            onClick={() => handleProtectedRoute("/dashboard/recipient/blood-request", "recipient")}
+            className="font-semibold hover:text-white/90"
+          >
+            Request Blood
+          </button>
 
-<button
-  onClick={() => navigate("/about-us")}
-  className="font-semibold hover:text-white/90"
->
- About Us
-</button>          
+          <button
+            onClick={() => navigate("/about-us")}
+            className="font-semibold hover:text-white/90"
+          >
+            About Us
+          </button>
 
-          {/* SIGN IN */}
+          {/* USER / SIGN IN */}
           {user ? (
-  <div
-    onClick={() => {
-  const dest = user.role === "user"
-    ? `/dashboard/${user.mode}`
-    : `/dashboard/${user.role}`
-  navigate(dest)
-}}
-    className="w-10 h-10 flex items-center justify-center 
-               rounded-full bg-red-600 text-white 
-               font-bold cursor-pointer hover:bg-red-700 transition"
-  >
-    {user.username.charAt(0).toUpperCase()}
-  </div>
-) : (
-  <button
-    onClick={() => navigate("/auth/role")}
-    className="px-3 py-[0.9px] bg-white text-black font-medium 
-               rounded-md hover:bg-zinc-200 shadow-sm hover:shadow-md"
-  >
-    Sign In
-  </button>
-)}
-          
+            <div className="flex items-center gap-3">
+              <div
+                onClick={() => {
+                  const dest =
+                    user?.role === "user"
+                      ? `/dashboard/${user?.mode}`
+                      : `/dashboard/${user?.role}`;
+                  navigate(dest);
+                }}
+                className="w-10 h-10 flex items-center justify-center 
+                           rounded-full bg-red-600 text-white 
+                           font-bold cursor-pointer hover:bg-red-700 transition"
+              >
+                {user?.username?.charAt(0).toUpperCase()}
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="text-sm text-red-400 hover:text-red-300"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => navigate("/auth/role")}
+              className="px-3 py-[0.9px] bg-white text-black font-medium 
+                         rounded-md hover:bg-zinc-200 shadow-sm hover:shadow-md"
+            >
+              Sign In
+            </button>
+          )}
         </div>
 
         {/* Mobile Hamburger */}
         <div className="md:hidden">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="focus:outline-none"
-          >
+          <button onClick={() => setIsOpen(!isOpen)}>
             <svg
               className="w-6 h-6"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
             >
               {isOpen ? (
                 <path
@@ -127,140 +154,51 @@ const handleProtectedRoute = (path, role) => {
         </div>
       </div>
 
-      {/* Mobile Menu with Animation */}
+      {/* Mobile Menu */}
       <AnimatePresence>
-  {isOpen && (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.3 }}
-      className="absolute md:hidden w-full bg-black border-b border-white/20 shadow-md px-6 py-6 flex flex-col gap-1 text-sm z-50"
-    >
-      {/* Main Actions */}
-      <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">Main</p>
-      
-      <Link to="/" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Home
-      </Link>
-      
-      <Link to="/dashboard/donor" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
-        Donate Blood
-      </Link>
-
-      <Link to="/" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Find Blood Banks
-      </Link>
-
-      <Link to="/dashboard/recipient" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Request Blood
-      </Link>
-
-      {/* Info */}
-      <p className="text-xs text-gray-500 uppercase tracking-widest mt-4 mb-2">Info</p>
-
-      <Link to="/faq" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 font-semibold hover:text-red-600 transition">
-        FAQs
-      </Link>
-
-      <Link to="/about-us" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-         About Us
-      </Link>
-
-      <a href="#" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Contact Us
-      </a>
-
-      <a href="#" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Eligibility Criteria
-      </a>
-
-      <a href="#" onClick={() => setIsOpen(false)}
-        className="flex items-center gap-3 py-3 border-b border-zinc-800 hover:text-red-400 transition">
-        Emergency Help
-      </a>
-
-      {/* Account */}
-      <p className="text-xs text-gray-500 uppercase tracking-widest mt-4 mb-2">Account</p>
-
-      {user ? (
-        <>
-          <div
-            onClick={() => {
-              navigate(`/dashboard/${user.role}`)
-              setIsOpen(false)
-            }}
-            className="flex items-center gap-3 py-3 border-b border-zinc-800 cursor-pointer hover:text-red-400 transition"
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="absolute md:hidden w-full bg-black border-b border-white/20 px-6 py-6 flex flex-col gap-2"
           >
-            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-red-600 text-white font-bold text-sm">
-              {user.username.charAt(0).toUpperCase()}
+
+            <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
+            <Link to="/dashboard/donor" onClick={() => setIsOpen(false)}>Donate Blood</Link>
+            <Link to="/dashboard/recipient" onClick={() => setIsOpen(false)}>Request Blood</Link>
+            <Link to="/about-us" onClick={() => setIsOpen(false)}>About Us</Link>
+
+            <div className="border-t border-zinc-800 mt-3 pt-3">
+
+              {user ? (
+                <>
+                  <div
+                    onClick={() => {
+                      handleLogout();
+                    }}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    Logout
+                  </div>
+                </>
+              ) : (
+                <button
+                  onClick={() => {
+                    navigate("/auth/role");
+                    setIsOpen(false);
+                  }}
+                  className="w-full bg-red-600 text-white py-2 rounded-lg"
+                >
+                  Sign In
+                </button>
+              )}
             </div>
-            <div>
-              <p className="text-white font-semibold">{user.username}</p>
-              <p className="text-gray-500 text-xs capitalize">{user.role}</p>
-            </div>
-          </div>
 
-          <div
-            onClick={() => {
-              navigate(`/dashboard/${user.role}`)
-              setIsOpen(false)
-            }}
-            className="flex items-center gap-3 py-3 border-b border-zinc-800 cursor-pointer hover:text-red-400 transition"
-          >
-            My Dashboard
-          </div>
-
-          <div
-            onClick={() => {
-              localStorage.removeItem("token")
-              localStorage.removeItem("role")
-              localStorage.removeItem("username")
-              setUser(null)
-              setIsOpen(false)
-              navigate("/")
-            }}
-            className="flex items-center gap-3 py-3 cursor-pointer text-red-500 hover:text-red-400 transition"
-          >
-            Logout
-          </div>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() => {
-              navigate("/auth/role")
-              setIsOpen(false)
-            }}
-            className="w-full mt-2 px-3 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition"
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => {
-              navigate("/auth/role")
-              setIsOpen(false)
-            }}
-            className="w-full mt-2 px-3 py-3 bg-zinc-800 text-white font-medium rounded-lg hover:bg-zinc-700 transition"
-          >
-            Register
-          </button>
-        </>
-      )}
-
-      {/* Bottom padding */}
-      <div className="h-6" />
-    </motion.div>
-  )}
-</AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

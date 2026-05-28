@@ -14,6 +14,10 @@ export const getCurrentUser = () => {
 
 export const logoutUser = async () => {
   try {
+    localStorage.removeItem("accessToken"); 
+  localStorage.removeItem("role");
+  localStorage.removeItem("mode");        
+  localStorage.removeItem("username");
     await axios.post(
       `${BACKEND_URL}/api/auth/logout`,
       {},
@@ -23,8 +27,8 @@ export const logoutUser = async () => {
     console.log("Logout error:", err);
   }
 
-  localStorage.removeItem("accessToken"); 
-  localStorage.removeItem("role");
-  localStorage.removeItem("mode");        
-  localStorage.removeItem("username");
+      window.location.replace("/")
+
+
+  
 };

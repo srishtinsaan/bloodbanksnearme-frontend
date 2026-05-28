@@ -39,10 +39,12 @@ function Login() {
 
       const { accessToken, role: backendRole, mode } = response.data.data;
 
+      
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("role", backendRole);
       localStorage.setItem("username", response.data.data.user.username);
       if (mode) localStorage.setItem("mode", mode);
+      window.dispatchEvent(new Event("auth-change"));
 
       if (backendRole === "admin") {
         navigate("/dashboard/admin");

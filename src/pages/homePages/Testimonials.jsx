@@ -30,7 +30,7 @@ export default function Testimonials() {
       name: "Dr. Emily Watson",
       handle: "@dr_watson_med",
       avatar: "EW",
-      text: "The AI matching system is brilliant. It finds the right donors based on location and availability instantly.",
+      text: "The platform made it very easy to find nearby blood banks and connect with donors during emergencies. The process was smooth and reliable.",
     },
     {
       name: "Alex Kumar",
@@ -62,7 +62,7 @@ export default function Testimonials() {
         </h2>
         <p className="text-xl text-zinc-400">
           Join thousands of users who are already experiencing better healthcare
-          with MediConnect
+          with BloodConnect
         </p>
       </div>
 

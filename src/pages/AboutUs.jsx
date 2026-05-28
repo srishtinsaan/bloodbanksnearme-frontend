@@ -69,11 +69,11 @@ function AboutUs() {
         "Submit blood requests or donate blood through registered blood banks using our secure platform.",
     },
     {
-      step: "04",
-      title: "Get AI Support",
-      description:
-        "Access our AI assistant to get answers about blood banks, donation processes, and emergency procedures.",
-    },
+  step: "04",
+  title: "Track & Manage Requests",
+  description:
+    "Monitor donation registrations and blood requests through dedicated dashboards with organized request management.",
+},
   ];
 
   return (

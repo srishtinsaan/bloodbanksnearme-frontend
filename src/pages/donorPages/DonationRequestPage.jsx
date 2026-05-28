@@ -111,6 +111,7 @@ export default function DonationRequestPage() {
       </header>
 
       {/* Main */}
+      
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Register as Donor</h1>
@@ -286,13 +287,36 @@ export default function DonationRequestPage() {
               Your details will be shared with verified blood banks in your area. You may be contacted when your blood group is needed.
             </p>
           </div>
+          <div className="flex flex-col sm:flex-row gap-4">
+  
+  <button
+    type="submit"
+    className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all duration-300"
+  >
+    Register as Donor
+  </button>
 
-          <button
-            type="submit"
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg transition-colors"
-          >
-            Register as Donor
-          </button>
+  <button
+    type="button"
+    onClick={() => navigate("/dashboard/donor/my-donations")}
+    className="
+      flex-1
+      bg-zinc-800
+      hover:bg-zinc-700
+      border border-zinc-700
+      text-white
+      font-semibold
+      py-3
+      rounded-xl
+      transition-all duration-300
+    "
+  >
+    Already Registered? View Details
+  </button>
+
+</div>
+
+          
         </form>
       </main>
     </div>
