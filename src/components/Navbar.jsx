@@ -107,9 +107,11 @@ const handleLogout = () => {
               <div
                 onClick={() => {
                   const dest =
-                    user?.role === "user"
-                      ? `/dashboard/${user?.mode}`
-                      : `/dashboard/${user?.role}`;
+    user?.role === "user"
+      ? user?.mode
+        ? `/dashboard/${user.mode}`
+        : "/auth/user-mode"
+      : `/dashboard/${user?.role}`;
                   navigate(dest);
                 }}
                 className="w-10 h-10 flex items-center justify-center 

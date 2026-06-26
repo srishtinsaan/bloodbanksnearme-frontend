@@ -4,10 +4,13 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const getCurrentUser = () => {
   const token = localStorage.getItem("accessToken"); 
   const role = localStorage.getItem("role");
-  const mode = localStorage.getItem("mode");         
   const username = localStorage.getItem("username");
+  const rawMode = localStorage.getItem("mode");
 
   if (!token || !role) return null;
+
+  // "null" string aur actual null dono handle karo
+  const mode = rawMode && rawMode !== "null" ? rawMode : null;
 
   return { token, role, mode, username };
 };

@@ -24,10 +24,17 @@ function UserMode() {
 
   const handleModeSelect = async (modeId) => {
   try {
+    const token = localStorage.getItem("accessToken");
+
     await axios.patch(
       `${BACKEND_URL}/api/auth/set-mode`,
       { mode: modeId },
-      { withCredentials: true }
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     localStorage.setItem("mode", modeId);
