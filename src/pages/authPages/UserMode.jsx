@@ -22,16 +22,27 @@ function UserMode() {
     },
   ];
 
-  const handleModeSelect = (modeId) => {
-  localStorage.setItem("mode", modeId);
-  
-  if (modeId === "donor") {
-    navigate("/dashboard/donor");
-  } else {
-    navigate("/dashboard/recipient");
+  const handleModeSelect = async (modeId) => {
+  try {
+    await axios.patch(
+      `${BACKEND_URL}/api/auth/set-mode`,
+      { mode: modeId },
+      { withCredentials: true }
+    );
+
+    localStorage.setItem("mode", modeId);
+
+    if (modeId === "donor") {
+      navigate("/dashboard/donor");
+    } else {
+      navigate("/dashboard/recipient");
+    }
+  } catch (error) {
+    console.error("Mode update failed:", error);
   }
 };
 
+  
   return (
     <div>
       <button
